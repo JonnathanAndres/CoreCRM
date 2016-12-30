@@ -1,0 +1,18 @@
+version: 2.0
+test:
+    image:
+        microsoft/dotnet:lastest
+    env:
+        - MY_ENV = "tcp"
+    install:
+        - dotnet restore CoreCRM
+        - dotent restore CoreCRM.IntegrationTest
+    before_script:
+        - dotnet build CoreCRM.IntegrationTest
+    script:
+        - dotnet test CoreCRM.IntegrationTest
+build:
+    image:
+        dockerfile_path: /CoreCRM/Dockerfile
+        build_dir: /CoreCRM
+        cache: true

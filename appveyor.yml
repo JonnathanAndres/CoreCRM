@@ -1,5 +1,6 @@
 version: 0.1.{build}
-# environment variables
+pull_requests:
+  do_not_increment_build_number: true
 environment:
   # Don't report back to the mothership
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
