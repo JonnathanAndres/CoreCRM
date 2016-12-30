@@ -1,7 +1,7 @@
 version: 2.0
 test:
     image:
-        microsoft/dotnet:lastest
+        microsoft/dotnet:latest
     env:
         - MY_ENV = "tcp"
     install:
