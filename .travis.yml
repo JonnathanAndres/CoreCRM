@@ -1,16 +1,19 @@
 language: csharp
 matrix:
-    include:
-        - os: linux
-          sudo: required
-          dist: trusty
-          solution: CoreCRM.sln
-          mono: none
-          dotnet: 1.0.0-preview2-003131
-        - os: osx
-          mono: none
-          dotnet: 1.0.0-preview2-003131
-
+  include:
+    - os: linux
+      sudo: required
+      dist: trusty
+      solution: CoreCRM.sln
+      mono: none
+      dotnet: 1.0.0-preview2-003131
+    - os: osx
+      mono: none
+      dotnet: 1.0.0-preview2-003131
+      before_install:
+        - brew update
+        - brew install openssl
+        - brew link --force openssl
 install:
   - dotnet restore CoreCRM
   - dotnet restore CoreCRM.IntegrationTest
