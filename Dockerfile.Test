@@ -4,8 +4,14 @@ RUN apt-get update && apt-get -y install sqlite3 libsqlite3-dev
 
 COPY . /app
 
-WORKDIR /app
+WORKDIR /app/CoreCRM
 
-RUN ["dotnet", "restore", "CoreCRM.IntegrationTest"]
+RUN ["dotnet", "restore"]
 
-ENTRYPOINT ["dotnet", "test", "CoreCRM.IntegrationTest"]
+RUN ["dotnet", "build"]
+
+RUN ["dotnet", "ef", "database", "update"]
+
+EXPOSE 5000/tcp
+
+ENTRYPOINT ["dotnet", "run", "--server.urls", "http://0.0.0.0:5000"]
