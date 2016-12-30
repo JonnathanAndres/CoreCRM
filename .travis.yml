@@ -9,9 +9,8 @@ matrix:
         - brew install openssl
         - ln -s /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib /usr/local/lib/
         - ln -s /usr/local/opt/openssl/lib/libssl.1.0.0.dylib /usr/local/lib/
-        - brew unlink openssl
-        - brew link --force openssl
 install:
+  - export MONO_MANAGED_WATCHER=disabled
   - dotnet restore CoreCRM
   - dotnet restore CoreCRM.IntegrationTest
 script:
