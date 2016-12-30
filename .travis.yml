@@ -10,10 +10,6 @@ matrix:
         - os: osx
           mono: none
           dotnet: 1.0.0-preview2-003131
-          before_install:
-              - brew update
-              - brew tap Caskroom/cask
-              - brew cask install dotnet
 
 install:
   - dotnet restore CoreCRM
