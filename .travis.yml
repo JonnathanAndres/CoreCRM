@@ -10,12 +10,11 @@ matrix:
         - os: osx
           mono: none
           dotnet: 1.0.0-preview2-003131
+          before_install:
+              - brew update
+              - brew tap Caskroom/cask
+              - brew cask install dotnet
 
-before_install:
-  - echo "Travis OS Name: $TRAVIS_OS_NAME"
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update              ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew tap Caskroom/cask   ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew cask install dotnet ; fi
 install:
   - dotnet restore CoreCRM
   - dotnet restore CoreCRM.IntegrationTest
