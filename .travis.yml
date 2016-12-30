@@ -7,6 +7,8 @@ matrix:
       dotnet: 1.0.0-preview2-003131
       before_install:
         - brew install openssl
+        - ln -s /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib /usr/local/lib/
+        - ln -s /usr/local/opt/openssl/lib/libssl.1.0.0.dylib /usr/local/lib/
         - brew unlink openssl
         - brew link --force openssl
 install:
