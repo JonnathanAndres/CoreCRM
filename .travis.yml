@@ -2,6 +2,7 @@ language: csharp
 matrix:
   include:
     - os: osx
+      osx_image: xcode8.2
       mono: none
       dotnet: 1.0.0-preview2-003131
       before_install:
