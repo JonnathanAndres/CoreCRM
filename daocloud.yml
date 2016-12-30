@@ -6,7 +6,7 @@ test:
         - MY_ENV = "tcp"
     install:
         - dotnet restore CoreCRM
-        - dotent restore CoreCRM.IntegrationTest
+        - dotnet restore CoreCRM.IntegrationTest
     before_script:
         - dotnet build CoreCRM.IntegrationTest
     script:
