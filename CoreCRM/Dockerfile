@@ -4,7 +4,7 @@ RUN apt-get update && apt-get -y install sqlite3 libsqlite3-dev
 
 COPY . /app
 
-WORKDIR /app
+WORKDIR /app/CoreCRM
 
 RUN ["dotnet", "restore"]
 
