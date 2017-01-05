@@ -1,3 +1,8 @@
+using System.Threading.Tasks;
+using CoreCRM.Data;
+using CoreCRM.Models;
+using CoreCRM.Repositories;
+using CoreCRM.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -6,9 +11,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using CoreCRM.Data;
-using CoreCRM.Models;
-using CoreCRM.Services;
 
 namespace CoreCRM
 {
@@ -48,6 +50,8 @@ namespace CoreCRM
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+
+            services.AddSingleton<IProfileRepository, ProfileRepository>();
         }
 
         protected virtual void ConfigureDbContext(IServiceCollection services)
@@ -98,7 +102,7 @@ namespace CoreCRM
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            //Task.Run(() => SeedData.Initialize(app.ApplicationServices, userManager, roleManager));
+            Task.Run(() => SeedData.Initialize(app.ApplicationServices, userManager, roleManager));
         }
 
         protected virtual void EnsureDatabaseCreated(IApplicationBuilder app, ApplicationDbContext dbContext)

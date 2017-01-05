@@ -1,28 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using CoreCRM.Repositories;
+using CoreCRM.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+using Microsoft.Extensions.Primitives;
 
 namespace CoreCRM.Controllers
 {
     [Authorize]
     public class ProfileController : Controller
     {
-        // GET: /Profile/
-        public IActionResult Index()
+        IProfileRepository _repository;
+        public ProfileController(IProfileRepository repo)
         {
-            return View();
+            _repository = repo;
+        }
+
+        // GET: /Profile/
+        public async Task<IActionResult> Index()
+        {
+            StringValues referer;
+            if (HttpContext.Request.Headers.TryGetValue("Referer", out referer)) {
+                ViewData["ReturnUrl"] = referer.ToString();
+            } else {
+                ViewData["ReturnUrl"] = "/";
+            }
+
+            var model = await _repository.GetCurrentUserProfileViewModelAsync(HttpContext.User);
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit()
+        public async Task<IActionResult> Index(ProfileViewModel model)
         {
-            return View();
+            if (ModelState.IsValid) {
+                await _repository.UpdateProfileAsync(HttpContext.User, model);
+                return RedirectToAction("Index", "Home");
+            }
+            return View(model);
         }
     }
 }
