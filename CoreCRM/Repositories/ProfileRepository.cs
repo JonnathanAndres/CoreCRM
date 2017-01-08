@@ -21,72 +21,64 @@ namespace CoreCRM.Repositories
             _dbContext = dbContext;
         }
 
-        async Task<Profile> IProfileRepository.GetCurrentUserProfileAsync(ClaimsPrincipal user)
+        async Task<Profile> IProfileRepository.GetUserProfileAsync(ClaimsPrincipal userClaimsPrincipal)
         {
-            var currentUser = await _userManager.GetUserAsync(user);
-            if (currentUser.ProfileID > 0) {
-                return await _dbContext.Profiles.SingleOrDefaultAsync(m => m.Id == currentUser.ProfileID);
+            var user = await _userManager.GetUserAsync(userClaimsPrincipal);
+            if (user.ProfileID > 0) {
+                return await _dbContext.Profiles.SingleOrDefaultAsync(m => m.Id == user.ProfileID);
             } else {
                 return null;
             }
         }
 
-        public async Task<ProfileViewModel> GetCurrentUserProfileViewModelAsync(ClaimsPrincipal user)
+        public async Task<ProfileViewModel> GetUserProfileViewModelAsync(ClaimsPrincipal userClaimsPrincipal)
         {
-            var currentUser = await _userManager.GetUserAsync(user);
+            var user = await _userManager.GetUserAsync(userClaimsPrincipal);
 
-            if (currentUser.ProfileID > 0) {
-                var profile = await _dbContext.Profiles.SingleOrDefaultAsync(m => m.Id == currentUser.ProfileID);
-
-                return new ProfileViewModel() {
-                    UserName = currentUser.UserName,
-                    Email = currentUser.Email,
-                    Phone = currentUser.PhoneNumber,
-                    AccountState = currentUser.State,
-
-                    Avatar = profile.Avatar,
-                    Gender = profile.Gender,
-                    Address = profile.Address,
-
-                    Position = "--",
-                    Department = "--",
-                };
-            } else {
-                return new ProfileViewModel() {
-                    UserName = currentUser.UserName,
-                    Email = currentUser.Email,
-                    Phone = currentUser.PhoneNumber,
-                    AccountState = currentUser.State,
-
-                    Avatar = "",
-                    Gender = Gender.Male,
-                    Address = "",
-
-                    Position = "--",
-                    Department = "--",
-                };
+            if (user.ProfileID > 0) {
+                var profile = await _dbContext.Profiles.SingleOrDefaultAsync(m => m.Id == user.ProfileID);
+                return FillViewModel(user, profile);
+            }
+            else {
+                return FillViewModel(user, null);
             }
         }
 
-        public async Task UpdateProfileAsync(ClaimsPrincipal user, ProfileViewModel model)
+        private static ProfileViewModel FillViewModel(ApplicationUser user, Profile profile)
         {
-            var currentUser = await _userManager.GetUserAsync(user);
-            if (currentUser.ProfileID == 0) {
+            return new ProfileViewModel() {
+                UserName = user.UserName,
+                Email = user.Email,
+                Phone = user.PhoneNumber,
+                AccountState = user.State,
+
+                Avatar = profile == null ? "" : profile.Avatar,
+                Gender = profile == null ? Gender.Male : profile.Gender,
+                Address = profile == null ? "" : profile.Address,
+
+                Position = "--",
+                Department = "--",
+            };
+        }
+
+        public async Task UpdateUserProfileAsync(ClaimsPrincipal userClaimsPrincipal, ProfileViewModel model)
+        {
+            var user = await _userManager.GetUserAsync(userClaimsPrincipal);
+            if (user.ProfileID == 0) {
                 // Create a new profile
                 var newProfile = new Profile() {
-                    AccountID = await _userManager.GetUserIdAsync(currentUser),
+                    AccountID = await _userManager.GetUserIdAsync(user),
                     Avatar = model.AvatarFile.FileName,
                     Gender = model.Gender,
                     Address = model.Address
                 };
                 await _dbContext.Profiles.AddAsync(newProfile);
                 await _dbContext.SaveChangesAsync();
-                Debug.WriteLine(string.Format("ProfileID: {0}", newProfile.Id));
 
                 // TODO: Update current user's ProfileID
             } else {
                 // Update exists profile
-                var profile = await _dbContext.Profiles.SingleOrDefaultAsync(m => m.Id == currentUser.ProfileID);
+                var profile = await _dbContext.Profiles.SingleOrDefaultAsync(m => m.Id == user.ProfileID);
 
                 profile.Gender = model.Gender;
                 profile.Address = model.Address;
@@ -99,6 +91,16 @@ namespace CoreCRM.Repositories
             }
 
             // Update currentUser
+        }
+
+        public Task UpdateUserProfileAsync(string userId, ProfileViewModel model)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ProfileViewModel> GetUserProfileViewModelAsync(string id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -6,33 +6,33 @@ namespace CoreCRM.ViewModels
 {
     public class ProfileViewModel
     {
-        [MaxLength(256)]
+        [StringLength(256)]
         public string Avatar { get; set; }
         public IFormFile AvatarFile { get; set; }
 
-        [MinLength(1)]
-        [MaxLength(32)]
+        [Required]
+        [StringLength(32)]
         public string UserName { get; set; }
 
         public AccountState AccountState { get; set; }
 
-        [MaxLength(32)]
+        [StringLength(32)]
         public string Department { get; set; }
 
-        [MaxLength(32)]
+        [StringLength(32)]
         public string Position { get; set; }
 
         public Gender Gender { get; set; }
 
         [EmailAddress]
-        [MaxLength(64)]
+        [StringLength(64)]
         public string Email { get; set; }
 
-        [MaxLength(15)]
         [Phone]
+        [StringLength(15)]
         public string Phone { get; set; }
 
-        [MaxLength(128)]
+        [StringLength(128)]
         public string Address { get; set; }
     }
 }

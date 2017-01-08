@@ -7,8 +7,11 @@ namespace CoreCRM.Repositories
 {
     public interface IProfileRepository
     {
-        Task<Profile> GetCurrentUserProfileAsync(ClaimsPrincipal user);
-        Task<ProfileViewModel> GetCurrentUserProfileViewModelAsync(ClaimsPrincipal user);
-        Task UpdateProfileAsync(ClaimsPrincipal user, ProfileViewModel model);
+        Task<Profile> GetUserProfileAsync(ClaimsPrincipal userClaimsPrincipal);
+
+        Task<ProfileViewModel> GetUserProfileViewModelAsync(string userId);
+        Task<ProfileViewModel> GetUserProfileViewModelAsync(ClaimsPrincipal userClaimsPrincipal);
+        Task UpdateUserProfileAsync(ClaimsPrincipal userClaimsPrincipal, ProfileViewModel model);
+        Task UpdateUserProfileAsync(string userId, ProfileViewModel model);
     }
 }

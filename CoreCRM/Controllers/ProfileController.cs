@@ -16,26 +16,31 @@ namespace CoreCRM.Controllers
             _repository = repo;
         }
 
-        // GET: /Profile/
-        public async Task<IActionResult> Index()
+        // GET: /Profile/<id?>
+        public async Task<IActionResult> Index(string id)
         {
-            StringValues referer;
-            if (HttpContext.Request.Headers.TryGetValue("Referer", out referer)) {
-                ViewData["ReturnUrl"] = referer.ToString();
-            } else {
-                ViewData["ReturnUrl"] = "/";
-            }
+            ViewData["ReturnUrl"] = ControllerHelpers.GetReferer(HttpContext, "/");
 
-            var model = await _repository.GetCurrentUserProfileViewModelAsync(HttpContext.User);
+            ProfileViewModel model;
+            if (id == null) {
+                model = await _repository.GetUserProfileViewModelAsync(HttpContext.User);
+            } else {
+                model = await _repository.GetUserProfileViewModelAsync(id);
+            }
             return View(model);
         }
 
+        // POST: /Profile/<id?>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(ProfileViewModel model)
+        public async Task<IActionResult> Index(ProfileViewModel model, string id)
         {
             if (ModelState.IsValid) {
-                await _repository.UpdateProfileAsync(HttpContext.User, model);
+                if (id == null) {
+                    await _repository.UpdateUserProfileAsync(HttpContext.User, model);
+                } else {
+                    await _repository.UpdateUserProfileAsync(id, model);
+                }
                 return RedirectToAction("Index", "Home");
             }
             return View(model);
