@@ -1,5 +1,5 @@
-﻿using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using CoreCRM.Data;
 using CoreCRM.Models;
 using CoreCRM.ViewModels;
 
@@ -7,11 +7,9 @@ namespace CoreCRM.Repositories
 {
     public interface IProfileRepository
     {
-        Task<Profile> GetUserProfileAsync(ClaimsPrincipal userClaimsPrincipal);
+        Task<Profile> GetUserProfileAsync(ApplicationUser user);
 
-        Task<ProfileViewModel> GetUserProfileViewModelAsync(string userId);
-        Task<ProfileViewModel> GetUserProfileViewModelAsync(ClaimsPrincipal userClaimsPrincipal);
-        Task UpdateUserProfileAsync(ClaimsPrincipal userClaimsPrincipal, ProfileViewModel model);
-        Task UpdateUserProfileAsync(string userId, ProfileViewModel model);
+        Task<ProfileViewModel> GetUserProfileViewModelAsync(ApplicationUser user);
+        Task UpdateUserProfileAsync(ApplicationUser user, ProfileViewModel model);
     }
 }

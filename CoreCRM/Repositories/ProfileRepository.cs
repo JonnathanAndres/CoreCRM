@@ -1,43 +1,44 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Security.Claims;
+using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using CoreCRM.Data;
 using CoreCRM.Models;
 using CoreCRM.ViewModels;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace CoreCRM.Repositories
 {
     public class ProfileRepository : IProfileRepository
     {
-        private UserManager<ApplicationUser> _userManager;
         private ApplicationDbContext _dbContext;
 
-        public ProfileRepository(UserManager<ApplicationUser> userManager, ApplicationDbContext dbContext)
+        public ProfileRepository(ApplicationDbContext dbContext)
         {
-            _userManager = userManager;
             _dbContext = dbContext;
         }
 
-        async Task<Profile> IProfileRepository.GetUserProfileAsync(ClaimsPrincipal userClaimsPrincipal)
+        public async Task<Profile> GetUserProfileAsync(ApplicationUser user)
         {
-            var user = await _userManager.GetUserAsync(userClaimsPrincipal);
+            if (user == null) throw new ArgumentNullException("user");            
+            Contract.Requires(user != null);
+
             if (user.ProfileID > 0) {
-                return await _dbContext.Profiles.SingleOrDefaultAsync(m => m.Id == user.ProfileID);
-            } else {
+                await _dbContext.Users.Include(u => u.Profile).LoadAsync();
+                return user.Profile;
+            }
+            else {
                 return null;
             }
         }
 
-        public async Task<ProfileViewModel> GetUserProfileViewModelAsync(ClaimsPrincipal userClaimsPrincipal)
+        public async Task<ProfileViewModel> GetUserProfileViewModelAsync(ApplicationUser user)
         {
-            var user = await _userManager.GetUserAsync(userClaimsPrincipal);
+            if (user == null) throw new ArgumentNullException("user");
+            Contract.EndContractBlock();
 
             if (user.ProfileID > 0) {
-                var profile = await _dbContext.Profiles.SingleOrDefaultAsync(m => m.Id == user.ProfileID);
-                return FillViewModel(user, profile);
+                await _dbContext.Users.Include(u => u.Profile).LoadAsync();
+                return FillViewModel(user, user.Profile);
             }
             else {
                 return FillViewModel(user, null);
@@ -46,6 +47,9 @@ namespace CoreCRM.Repositories
 
         private static ProfileViewModel FillViewModel(ApplicationUser user, Profile profile)
         {
+            if (user == null) throw new ArgumentNullException("user");
+            Contract.EndContractBlock();
+
             return new ProfileViewModel() {
                 UserName = user.UserName,
                 Email = user.Email,
@@ -61,13 +65,15 @@ namespace CoreCRM.Repositories
             };
         }
 
-        public async Task UpdateUserProfileAsync(ClaimsPrincipal userClaimsPrincipal, ProfileViewModel model)
+        public async Task UpdateUserProfileAsync(ApplicationUser user, ProfileViewModel model)
         {
-            var user = await _userManager.GetUserAsync(userClaimsPrincipal);
+            if (user == null) throw new ArgumentNullException("user");
+            Contract.EndContractBlock();
+
             if (user.ProfileID == 0) {
                 // Create a new profile
                 var newProfile = new Profile() {
-                    AccountID = await _userManager.GetUserIdAsync(user),
+                    AccountID = user.Id,
                     Avatar = model.AvatarFile.FileName,
                     Gender = model.Gender,
                     Address = model.Address
@@ -91,16 +97,6 @@ namespace CoreCRM.Repositories
             }
 
             // Update currentUser
-        }
-
-        public Task UpdateUserProfileAsync(string userId, ProfileViewModel model)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ProfileViewModel> GetUserProfileViewModelAsync(string id)
-        {
-            throw new NotImplementedException();
         }
     }
 }

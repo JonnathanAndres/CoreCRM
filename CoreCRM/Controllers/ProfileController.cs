@@ -1,49 +1,64 @@
-﻿using System.Threading.Tasks;
-using CoreCRM.Repositories;
-using CoreCRM.ViewModels;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
+using System.Threading.Tasks; 
+using CoreCRM.Models; 
+using CoreCRM.Repositories; 
+using CoreCRM.ViewModels; 
+using Microsoft.AspNetCore.Identity; 
+using Microsoft.AspNetCore.Authorization; 
+using Microsoft.AspNetCore.Mvc; 
 
-namespace CoreCRM.Controllers
-{
+namespace CoreCRM.Controllers {
     [Authorize]
-    public class ProfileController : Controller
-    {
-        IProfileRepository _repository;
-        public ProfileController(IProfileRepository repo)
-        {
-            _repository = repo;
+    public class ProfileController:Controller {
+        private UserManager<ApplicationUser> _userManager; 
+        private IProfileRepository _repository; 
+        public ProfileController(UserManager<ApplicationUser> userManager, IProfileRepository repository) {
+            _userManager = userManager; 
+            _repository = repository; 
         }
 
         // GET: /Profile/<id?>
-        public async Task<IActionResult> Index(string id)
-        {
-            ViewData["ReturnUrl"] = ControllerHelpers.GetReferer(HttpContext, "/");
+        public async Task<IActionResult> Index(string id) {
+            ViewData["ReturnUrl"] = ControllerHelpers.GetReferer(HttpContext, "/"); 
 
-            ProfileViewModel model;
-            if (id == null) {
-                model = await _repository.GetUserProfileViewModelAsync(HttpContext.User);
-            } else {
-                model = await _repository.GetUserProfileViewModelAsync(id);
+            ProfileViewModel model; 
+            if (string.IsNullOrEmpty(id)) {
+                var user = await _userManager.GetUserAsync(HttpContext.User); 
+                model = await _repository.GetUserProfileViewModelAsync(user); 
             }
-            return View(model);
+            else {
+                var user = await _userManager.FindByIdAsync(id); 
+                if (user != null) {
+                    model = await _repository.GetUserProfileViewModelAsync(user); 
+                }
+                else {
+                    ModelState.AddModelError(string.Empty, "没有找到对应的用户"); 
+                    return NotFound(); 
+                }
+            }
+            return View(model); 
         }
 
         // POST: /Profile/<id?>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(ProfileViewModel model, string id)
-        {
+        public async Task<IActionResult> Index(ProfileViewModel model, string id) {
             if (ModelState.IsValid) {
-                if (id == null) {
-                    await _repository.UpdateUserProfileAsync(HttpContext.User, model);
-                } else {
-                    await _repository.UpdateUserProfileAsync(id, model);
+                if (string.IsNullOrEmpty(id)) {
+                    var user = await _userManager.GetUserAsync(HttpContext.User); 
+                    await _repository.UpdateUserProfileAsync(user, model); 
                 }
-                return RedirectToAction("Index", "Home");
+                else {
+                    var user = await _userManager.FindByIdAsync(id); 
+                    if (user != null) {
+                        await _repository.UpdateUserProfileAsync(user, model); 
+                    }
+                    else {
+                        return NotFound(); 
+                    }
+                }
+                return RedirectToAction("Index", "Home"); 
             }
-            return View(model);
+            return View(model); 
         }
     }
 }
