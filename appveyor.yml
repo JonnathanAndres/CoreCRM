@@ -7,14 +7,16 @@ environment:
 configuration: Debug
 platform: Any CPU
 init:
-- cmd: git config --global core.autocrlf true
+  - cmd: git config --global core.autocrlf true
 before_build:
-- cmd: appveyor-retry dotnet restore -v Minimal
+  - cmd: appveyor-retry dotnet restore -v Minimal
 build:
   project: CoreCRM.sln
   verbosity: minimal
 test_script:
-- cmd: dotnet test CoreCRM.IntegrationTest
+  - cmd: dotnet test CoreCRM.UnitTest -xml .\xunit-result.xml
+  - ps: $wc = New-Object "System.Net.WebClient"
+  - ps: $wc.UploadFile("https://ci.appveyor.com/api/testresults/xunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\xunit-results.xml))
 cache:
-- '%USERPROFILE%\.nuget\packages'
+  - '%USERPROFILE%\.nuget\packages'
 deploy: off
