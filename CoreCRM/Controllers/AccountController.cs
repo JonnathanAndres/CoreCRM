@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -70,22 +69,18 @@ namespace CoreCRM.Controllers
 				// This doesn't count login failures towards account lockout
 				// To enable password failures to trigger account lockout, set lockoutOnFailure: true
 				var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, lockoutOnFailure: false);
-                if (result.Succeeded)
-                {
+                if (result.Succeeded) {
                     _logger.LogInformation(1001, "User logged in.");
                     return RedirectToLocal(returnUrl);
                 }
-                if (result.RequiresTwoFactor)
-                {
+                if (result.RequiresTwoFactor) {
                     return RedirectToAction(nameof(SendCode), new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
                 }
-                if (result.IsLockedOut)
-                {
+                if (result.IsLockedOut) {
                     _logger.LogWarning(1002, "User account locked out.");
                     return View("Lockout");
                 }
-                else
-                {
+                else {
                     ModelState.AddModelError(string.Empty, "用户名或密码错误");
                     return View(model);
                 }
