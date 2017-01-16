@@ -11,7 +11,7 @@ namespace CoreCRM.Data
         {
         }
 
-        public DbSet<Profile> Profiles;
+        public DbSet<Profile> Profiles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

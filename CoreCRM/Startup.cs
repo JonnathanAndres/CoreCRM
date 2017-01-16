@@ -52,6 +52,7 @@ namespace CoreCRM
             services.AddTransient<ISmsSender, AuthMessageSender>();
 
             services.AddSingleton<IProfileRepository, ProfileRepository>();
+            services.AddSingleton<IHelpers, Helpers>();
         }
 
         protected virtual void ConfigureDbContext(IServiceCollection services)

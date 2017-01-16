@@ -19,7 +19,7 @@ namespace CoreCRM.Repositories
 
         public async Task<Profile> GetUserProfileAsync(ApplicationUser user)
         {
-            if (user == null) throw new ArgumentNullException("user");            
+            if (user == null) throw new ArgumentNullException(nameof(user));            
             Contract.Requires(user != null);
 
             if (user.ProfileID > 0) {
@@ -33,7 +33,7 @@ namespace CoreCRM.Repositories
 
         public async Task<ProfileViewModel> GetUserProfileViewModelAsync(ApplicationUser user)
         {
-            if (user == null) throw new ArgumentNullException("user");
+            if (user == null) throw new ArgumentNullException(nameof(user));
             Contract.EndContractBlock();
 
             if (user.ProfileID > 0) {
@@ -47,7 +47,7 @@ namespace CoreCRM.Repositories
 
         private static ProfileViewModel FillViewModel(ApplicationUser user, Profile profile)
         {
-            if (user == null) throw new ArgumentNullException("user");
+            if (user == null) throw new ArgumentNullException(nameof(user));
             Contract.EndContractBlock();
 
             return new ProfileViewModel() {
@@ -67,36 +67,51 @@ namespace CoreCRM.Repositories
 
         public async Task UpdateUserProfileAsync(ApplicationUser user, ProfileViewModel model)
         {
-            if (user == null) throw new ArgumentNullException("user");
+            if (user == null) throw new ArgumentNullException(nameof(user));
+            if (model == null) throw new ArgumentNullException(nameof(model));
             Contract.EndContractBlock();
 
             if (user.ProfileID == 0) {
                 // Create a new profile
-                var newProfile = new Profile() {
+                var newProfile = new Profile {
                     AccountID = user.Id,
-                    Avatar = model.AvatarFile.FileName,
                     Gender = model.Gender,
                     Address = model.Address
                 };
-                await _dbContext.Profiles.AddAsync(newProfile);
+
+                if (model.AvatarFile != null) {
+                    newProfile.Avatar = model.AvatarFile.FileName;
+                }
+
+                _dbContext.Profiles.Add(newProfile);
                 await _dbContext.SaveChangesAsync();
 
-                // TODO: Update current user's ProfileID
+                // Update user's ProfileID
+                user.ProfileID = newProfile.Id;
+
             } else {
                 // Update exists profile
-                var profile = await _dbContext.Profiles.SingleOrDefaultAsync(m => m.Id == user.ProfileID);
+                var profileToUpdate = await _dbContext.Profiles.SingleOrDefaultAsync(m => m.Id == user.ProfileID);
 
-                profile.Gender = model.Gender;
-                profile.Address = model.Address;
+                profileToUpdate.Gender = model.Gender;
+                profileToUpdate.Address = model.Address ?? profileToUpdate.Address;
                 
                 if (model.AvatarFile != null) {
-                    profile.Avatar = model.AvatarFile.FileName;
+                    profileToUpdate.Avatar = model.AvatarFile.FileName;
                 }
-                await _dbContext.AddAsync(profile);
+
+                _dbContext.Update(profileToUpdate);
                 await _dbContext.SaveChangesAsync();
             }
 
-            // Update currentUser
+            // Update user
+            user.Email = model.Email ?? user.Email;
+            user.PhoneNumber = model.Phone ?? user.PhoneNumber;
+            user.State = model.AccountState;
+            user.UserName = model.UserName ?? user.UserName;
+
+            _dbContext.Update(user);
+            await _dbContext.SaveChangesAsync();
         }
     }
 }
