@@ -10,6 +10,6 @@ namespace CoreCRM.Repositories
         Task<Profile> GetUserProfileAsync(ApplicationUser user);
 
         Task<ProfileViewModel> GetUserProfileViewModelAsync(ApplicationUser user);
-        Task UpdateUserProfileAsync(ApplicationUser user, ProfileViewModel model);
+        Task<ApplicationUser> UpdateUserProfileAsync(ApplicationUser user, ProfileViewModel model);
     }
 }

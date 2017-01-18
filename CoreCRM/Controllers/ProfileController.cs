@@ -58,7 +58,8 @@ namespace CoreCRM.Controllers {
                 }
 
                 if (user != null) {
-                    await _repository.UpdateUserProfileAsync(user, model); 
+                    user = await _repository.UpdateUserProfileAsync(user, model);
+                    await _userManager.UpdateAsync(user);
                 }
                 else {
                     return NotFound(); 

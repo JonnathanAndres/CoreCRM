@@ -9,9 +9,10 @@ using CoreCRM.Models;
 namespace CoreCRM.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170117051321_CreateIdentitySchema")]
+    partial class CreateIdentitySchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.0-rtm-22752");
@@ -27,7 +28,7 @@ namespace CoreCRM.Migrations
                         .IsConcurrencyToken();
 
                     b.Property<string>("Email")
-                        .HasMaxLength(256);
+                        .HasMaxLength(128);
 
                     b.Property<bool>("EmailConfirmed");
 
@@ -36,10 +37,10 @@ namespace CoreCRM.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd");
 
                     b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256);
+                        .HasMaxLength(128);
 
                     b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256);
+                        .HasMaxLength(128);
 
                     b.Property<string>("PasswordHash");
 
@@ -47,7 +48,7 @@ namespace CoreCRM.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed");
 
-                    b.Property<int?>("ProfileID");
+                    b.Property<int>("ProfileID");
 
                     b.Property<string>("SecurityStamp");
 
@@ -56,7 +57,7 @@ namespace CoreCRM.Migrations
                     b.Property<bool>("TwoFactorEnabled");
 
                     b.Property<string>("UserName")
-                        .HasMaxLength(256);
+                        .HasMaxLength(128);
 
                     b.HasKey("Id");
 
@@ -101,10 +102,10 @@ namespace CoreCRM.Migrations
                         .IsConcurrencyToken();
 
                     b.Property<string>("Name")
-                        .HasMaxLength(256);
+                        .HasMaxLength(128);
 
                     b.Property<string>("NormalizedName")
-                        .HasMaxLength(256);
+                        .HasMaxLength(128);
 
                     b.HasKey("Id");
 
@@ -203,7 +204,8 @@ namespace CoreCRM.Migrations
                 {
                     b.HasOne("CoreCRM.Models.Profile", "Profile")
                         .WithMany()
-                        .HasForeignKey("ProfileID");
+                        .HasForeignKey("ProfileID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>

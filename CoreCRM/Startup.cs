@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using MySQL.Data.Entity.Extensions;
 
 namespace CoreCRM
 {
@@ -57,8 +58,11 @@ namespace CoreCRM
 
         protected virtual void ConfigureDbContext(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<ApplicationDbContext>(options => {
+                //options.UseSqlite(Configuration.GetConnectionString("DefaultConnection");
+                options.UseMySQL(Configuration.GetConnectionString("MySQLConnection"));
+                //options.UseNpgsql(Configuration.GetConnectionString("PgSQLConnection"));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -109,7 +113,9 @@ namespace CoreCRM
         protected virtual void EnsureDatabaseCreated(IApplicationBuilder app, ApplicationDbContext dbContext)
         {
             // run Migrations
-            dbContext.Database.Migrate();
+            //dbContext.Database.Migrate();
+
+            dbContext.Database.EnsureCreated();
         }
     }
 }

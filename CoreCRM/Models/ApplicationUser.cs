@@ -5,9 +5,9 @@ namespace CoreCRM.Models
 {
     public enum AccountState
     {
-        [Display(Name="ÆôÓÃ")]
+        [Display(Name="å¯ç”¨")]
         Enabled = 0,
-        [Display(Name = "Í£ÓÃ")]
+        [Display(Name = "Í£åœç”¨")]
         Disabled
     }
 

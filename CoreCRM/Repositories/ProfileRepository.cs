@@ -65,7 +65,7 @@ namespace CoreCRM.Repositories
             };
         }
 
-        public async Task UpdateUserProfileAsync(ApplicationUser user, ProfileViewModel model)
+        public async Task<ApplicationUser> UpdateUserProfileAsync(ApplicationUser user, ProfileViewModel model)
         {
             if (user == null) throw new ArgumentNullException(nameof(user));
             if (model == null) throw new ArgumentNullException(nameof(model));
@@ -110,8 +110,7 @@ namespace CoreCRM.Repositories
             user.State = model.AccountState;
             user.UserName = model.UserName ?? user.UserName;
 
-            _dbContext.Update(user);
-            await _dbContext.SaveChangesAsync();
+            return user;
         }
     }
 }

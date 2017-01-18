@@ -1,3 +1,4 @@
+using System.Data;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using CoreCRM.Models;
@@ -12,6 +13,11 @@ namespace CoreCRM.Data
         }
 
         public DbSet<Profile> Profiles { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+        }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

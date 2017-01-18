@@ -43,7 +43,7 @@ namespace CoreCRM.UnitTest.Controllers
             _mockUserManager.Setup(m => m.GetUserAsync(It.IsAny<ClaimsPrincipal>())).Returns(Task.FromResult(user));
             _mockProfileRepository.Setup(m => m.GetUserProfileViewModelAsync(It.IsAny<ApplicationUser>())).Returns(Task.FromResult(viewModel));
             _mockUserManager.Setup(m => m.FindByIdAsync(It.IsAny<string>())).Returns(Task.FromResult(user));
-            _mockProfileRepository.Setup(m => m.UpdateUserProfileAsync(It.IsAny<ApplicationUser>(), It.IsAny<ProfileViewModel>())).Returns(Task.FromResult(0));
+            _mockProfileRepository.Setup(m => m.UpdateUserProfileAsync(It.IsAny<ApplicationUser>(), It.IsAny<ProfileViewModel>())).Returns(Task.FromResult(user));
 
             var controller = new ProfileController(_mockUserManager.Object, _mockProfileRepository.Object, _mockHelpers.Object);
             controller.ControllerContext = new ControllerContext();

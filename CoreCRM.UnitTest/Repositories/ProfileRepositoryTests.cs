@@ -194,17 +194,20 @@ namespace CoreCRM.UnitTest.Repositories
             var user = await _userManager.FindByNameAsync("no-profile");
             var viewModel = new ProfileViewModel
             {
-                Phone = "18910053803",
+                UserName = "new-name",
+                Phone = "18910053802",
                 Address = "address"                
             };
 
             // Act
-            await sut.UpdateUserProfileAsync(user, viewModel);
+            var updatedUser = await sut.UpdateUserProfileAsync(user, viewModel);
+            await _userManager.UpdateAsync(updatedUser);
 
             // Assert
-            user = await _userManager.FindByNameAsync("no-profile");
-            Assert.True(user.ProfileID > 0);
-            Assert.Equal("18910053803", user.PhoneNumber);
+            var newUser = await _userManager.FindByNameAsync("new-name");
+            Assert.NotNull(newUser);
+            Assert.True(newUser.ProfileID > 0);
+            Assert.Equal("18910053803", newUser.PhoneNumber);
 
             var profile = await _dbContext.Profiles.SingleOrDefaultAsync(m => m.Id == user.ProfileID);
             Assert.NotNull(profile);
@@ -220,17 +223,20 @@ namespace CoreCRM.UnitTest.Repositories
             var user = await _userManager.FindByNameAsync("has-profile");
             var viewModel = new ProfileViewModel
             {
+                UserName = "new-name",
                 Phone = "18910053803",
                 Address = "address"
             };
 
             // Act
-            await sut.UpdateUserProfileAsync(user, viewModel);
+            var updatedUser = await sut.UpdateUserProfileAsync(user, viewModel);
+            await _userManager.UpdateAsync(updatedUser);
 
             // Assert
-            user = await _userManager.FindByNameAsync("has-profile");
-            Assert.NotNull(user);
-            Assert.Equal("18910053803", user.PhoneNumber);
+            var newUser = await _userManager.FindByNameAsync("new-name");
+            Assert.NotNull(newUser);
+            Assert.Equal("new-name", newUser.UserName);
+            Assert.Equal("18910053803", newUser.PhoneNumber);
 
             var profile = await _dbContext.Profiles.SingleOrDefaultAsync(m => m.Id == user.ProfileID);
             Assert.NotNull(profile);

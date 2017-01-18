@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace CoreCRM.Models
 {
@@ -24,11 +23,23 @@ namespace CoreCRM.Models
                     return; // DB has been seeded.
                 }
 
+                var profile = new Profile
+                {
+
+                };
+                context.Profiles.Add(profile);
+                await context.SaveChangesAsync();
+
                 var user = new ApplicationUser() {
+                    ProfileID = profile.Id,
                     UserName = "admin",
                     Email = "admin@163.com"
                 };
                 var result = await userManager.CreateAsync(user, "11aaAA_");
+
+                profile.AccountID = user.Id;
+                context.Update(profile);
+                await context.SaveChangesAsync();
 
                 await roleManager.CreateAsync(new IdentityRole("Administrator"));
                 await roleManager.CreateAsync(new IdentityRole("Employee"));
