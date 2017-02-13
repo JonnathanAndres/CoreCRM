@@ -12,6 +12,13 @@
 
         <form role="form" class="form-horizontal" asp-controller="Profile" asp-action="Index" method="post">
             <div class="form-group">
+                <label asp-for="Avatar" class="col-sm-2 control-label">头像</label>
+                <div class="col-sm-4">
+                    <div style="width: 100px; height: 100px; background-color: red; margin-bottom: 8px;"><img src=""></div>
+                    <input asp-for="AvatarFile" class="">
+                </div>
+            </div>
+            <div class="form-group">
                 <label asp-for="UserName" class="col-sm-2 control-label">用户名</label>
                 <div class="col-sm-4">
                     <input asp-for="UserName" class="form-control" placeholder="修改用户名">
