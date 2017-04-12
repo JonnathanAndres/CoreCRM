@@ -6,9 +6,9 @@ test:
         - dotnet restore CoreCRM
         - dotnet restore CoreCRM.UnitTest
     before_script:
-        - dotnet build CoreCRM.UnitTest
+        - dotnet build ./CoreCRM.UnitTest/CoreCRM.UnitTest.csproj
     script:
-        - dotnet test CoreCRM.UnitTest
+        - dotnet test ./CoreCRM.UnitTest/CoreCRM.UnitTest.csproj
 build:
     image:
         dockerfile_path: /CoreCRM/Dockerfile
