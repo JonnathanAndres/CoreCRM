@@ -15,4 +15,4 @@ install:
   - dotnet restore CoreCRM.UnitTest
 script:
   - ulimit -n 2048
-  - dotnet test CoreCRM.UnitTest
+  - dotnet test ./CoreCRM.UnitTest/CoreCRM.UnitTest.csproj
