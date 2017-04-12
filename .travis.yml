@@ -10,6 +10,7 @@ matrix:
           #- ln -s /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib /usr/local/lib/
           #- ln -s /usr/local/opt/openssl/lib/libssl.1.0.0.dylib /usr/local/lib/
 install:
+  - ulimit -n 2048
   - dotnet restore CoreCRM
   - dotnet restore CoreCRM.UnitTest
 script:
