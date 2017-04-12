@@ -3,11 +3,10 @@
 const path = require("path");
 const webpack = require("webpack");
 
-let PJ = path.join;
 let outputPath = path.join(__dirname, 'build');
 
 module.exports = {
-  context: PJ(__dirname, "src"),
+  context: path.join(__dirname, "src"),
   entry: {
     orgnization: './orgnization.js',
   },
@@ -35,6 +34,6 @@ module.exports = {
     ],
   },
   devServer: {
-    contentBase: PJ(__dirname, "build"),
+    contentBase: path.join(__dirname, "build"),
   },
 };
