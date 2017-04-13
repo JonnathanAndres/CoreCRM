@@ -5,10 +5,10 @@ matrix:
       osx_image: xcode8.3
       mono: none
       dotnet: 1.0.1
-      #before_install:
-          #- brew install openssl
-          #- ln -s /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib /usr/local/lib/
-          #- ln -s /usr/local/opt/openssl/lib/libssl.1.0.0.dylib /usr/local/lib/
+    - os: linux
+      mono: none
+      dotnet: 1.0.1
+
 install:
   - ulimit -n 2048
   - dotnet restore CoreCRM
