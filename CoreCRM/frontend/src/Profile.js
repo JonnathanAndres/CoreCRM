@@ -1,5 +1,6 @@
 'use strict';
 import Vue from 'vue';
+import API from './api';
 
 const bus = new Vue({});
 
@@ -20,13 +21,7 @@ const vm1 = new Vue({
   },
   created() {
     let _this = this;
-    setTimeout(() => {
-      _this.departments = [
-        {value: 1, text: '办公室'},
-        {value: 2, text: '服务部'},
-      ];
-      _this.selected = 1;
-    }, 100);
+    API.loadDepartments(this);
   }
 });
 
@@ -36,22 +31,10 @@ const vm2 = new Vue({
     positions: [],
     selected: 0
   },
-  methods: {
-    loadPositions: function(department) {
-      let _this = this;
-      setTimeout(() => {
-        _this.positions = [
-          {value: 1, text: '岗位1 ' + department.text},
-          {value: 2, text: '岗位2 ' + department.text},
-        ];
-        _this.selected = 1;
-      }, 100);
-    }
-  },
   created() {
     const _this = this;
     bus.$on('department-changed', function(params) {
-      _this.loadPositions(params);
+      API.loadPositions(_this, params);
     });
   }
 });
