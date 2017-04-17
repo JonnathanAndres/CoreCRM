@@ -1,6 +1,7 @@
-﻿<!DOCTYPE html>
-<!--[if lt IE 10]><html class="old-id"><![endif]-->
-<!--[if gte IE 10]>-->
+﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+<!DOCTYPE html>
+<!--[if lt IE 9]><html class="old-ie"><![endif]-->
+<!--[if gte IE 9]>-->
 <html>
 <!--<![endif]-->
 <head>
@@ -8,14 +9,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - CoreCRM</title>
 
-    @await Html.PartialAsync("_StylesPartial")
+    <environment names="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.css" />
+        <link rel="stylesheet" href="~/lib/highcharts/css/highcharts.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+    </environment>
+    <environment names="Staging,Production">
+        <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"
+              asp-fallback-href="~/lib/font-awesome/css/font-awesome.min.css"
+              asp-fallback-test-class="fa" asp-fallback-test-property="display" asp-fallback-test-value="inline-block" />
+        <link rel="stylesheet" href="https://cdn.bootcss.com/highcharts/5.0.5/css/highcharts.css"
+              asp-fallback-href="~/lib/highcharts/css/highcharts.css"
+              asp-fallback-test-class="highcharts-container" asp-fallback-test-property="position" asp-fallback-test-value="relative" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+    </environment>
+    @RenderSection("Styles", required: false)
+    @Html.Raw(JavaScriptSnippet.FullScript)
 </head>
 <body>
     <div class="old-browser-warning">
         <h1>您的浏览器版本太低，请使用 IE10 以上版本的浏览器，或者使用 Chrome，Firefox 等浏览器。</h1>
     </div>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container" class="body-content">
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
@@ -29,13 +50,26 @@
                 @await Component.InvokeAsync("NavigationBar")
             </div>
         </div>
-    </div>
-    <div class="@ViewData["ContainerClass"]">
-        @RenderBody()
-        @await Html.PartialAsync("_FooterPartial")
-    </div>
+    </nav>
 
-    @await Html.PartialAsync("_ScriptsPartial")
-    @RenderSection("scripts", required: false)
+    @RenderBody()
+
+    <environment names="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery">
+        </script>
+        <script src="https://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal">
+        </script>
+    </environment>
+
+    @RenderSection("Scripts", required: false)
 </body>
 </html>
+

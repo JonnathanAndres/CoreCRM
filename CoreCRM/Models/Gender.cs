@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CoreCRM.Services
+namespace CoreCRM.Models
 {
-    public interface ISmsSender
+    public enum Gender
     {
-        Task SendSmsAsync(string number, string message);
+        Male = 0,
+        Female = 1
     }
 }

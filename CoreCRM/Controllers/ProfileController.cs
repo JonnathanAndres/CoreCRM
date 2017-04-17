@@ -12,18 +12,16 @@ namespace CoreCRM.Controllers {
     public class ProfileController:Controller {
         private UserManager<ApplicationUser> _userManager; 
         private IProfileRepository _repository;
-        private IHelpers _helpers;
-        public ProfileController(UserManager<ApplicationUser> userManager, IProfileRepository repository, IHelpers helpers)
+        public ProfileController(UserManager<ApplicationUser> userManager, IProfileRepository repository)
         {
             _userManager = userManager; 
             _repository = repository;
-            _helpers = helpers;
         }
 
         // GET: /Profile/<id?>
         [Authorize]
         public async Task<IActionResult> Index(string id, string returnUrl=null) {
-            ViewData["ReturnUrl"] = _helpers.GetReferer(HttpContext, returnUrl ?? "/"); 
+            ViewData["ReturnUrl"] = returnUrl; 
 
             ProfileViewModel model;
             if (string.IsNullOrEmpty(id)) {
