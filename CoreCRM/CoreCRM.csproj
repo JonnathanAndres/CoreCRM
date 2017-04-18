@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <DefaultItemExcludes>$(DefaultItemExcludes);frontend\**\*</DefaultItemExcludes>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <UserSecretsId>aspnet-CoreCRM-d19245e9-51ac-451a-92c4-40c9deb1f125</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
