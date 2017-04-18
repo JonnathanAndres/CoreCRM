@@ -42,11 +42,23 @@ namespace CoreCRM
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
+            services.AddOptions();
+
             ConfigureDbContext(services);
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                var pwOptions = new Options.PasswordOptions();
+                Configuration.GetSection("Password").Bind(pwOptions);
+
+                options.Password.RequireDigit = pwOptions.RequireDigit;
+                options.Password.RequiredLength = pwOptions.RequiredLength;
+                options.Password.RequireLowercase = pwOptions.RequireLowercase;
+                options.Password.RequireNonAlphanumeric = pwOptions.RequireNonAlphanumeric;
+                options.Password.RequireUppercase = pwOptions.RequireUppercase;
+            })
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
 
             services.AddMvc();
 
@@ -60,9 +72,9 @@ namespace CoreCRM
         protected virtual void ConfigureDbContext(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options => {
-                //options.UseSqlite(Configuration.GetConnectionString("DefaultConnection");
                 //options.UseMySQL(Configuration.GetConnectionString("MySQLConnection"));
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                options.UseInMemoryDatabase();
             });
         }
 
@@ -107,13 +119,10 @@ namespace CoreCRM
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
+            // Seed test data.
             if (env.IsDevelopment())
             {
-                using (var userManager = app.ApplicationServices.GetRequiredService<UserManager<ApplicationUser>>())
-                using (var roleManager = app.ApplicationServices.GetRequiredService<RoleManager<IdentityRole>>())
-                {
-                    Task.Run(() => SeedData.Initialize(app.ApplicationServices, userManager, roleManager));
-                }
+                Task.Run(() => SeedData.Initialize(app.ApplicationServices));
             }
         }
 

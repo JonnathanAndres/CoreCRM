@@ -1,246 +1,288 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.EntityFrameworkCore;
+
 using CoreCRM.Data;
+using CoreCRM.Repositories;
 using CoreCRM.Models;
 using CoreCRM.ViewModels;
-using CoreCRM.Repositories;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features.Authentication;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
-namespace CoreCRM.UnitTest.Repositories
+namespace UnitTests.Repositories
 {
+    [TestClass]
     public class ProfileRepositoryTests
     {
-        private ApplicationDbContext _dbContext;
-        private UserManager<ApplicationUser> _userManager;
-
-        public ProfileRepositoryTests()
+        private static DbContextOptions<ApplicationDbContext> GetDbContextOptions(string databaseName)
         {
-            var services = new ServiceCollection();
-            services.AddEntityFramework()
-                    .AddEntityFrameworkInMemoryDatabase()
-                    .AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase());
-
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                    .AddEntityFrameworkStores<ApplicationDbContext>();
-
-            // Taken from https://github.com/aspnet/MusicStore/blob/dev/test/MusicStore.Test/ManageControllerTest.cs (and modified)
-            // IHttpContextAccessor is required for SignInManager, and UserManager
-            var context = new DefaultHttpContext();
-            context.Features.Set<IHttpAuthenticationFeature>(new HttpAuthenticationFeature());
-            services.AddSingleton<IHttpContextAccessor>(h => new HttpContextAccessor { HttpContext = context });
-
-            var serviceProvider = services.BuildServiceProvider();
-            _dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
-            _userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-        }
-
-        private async Task InitiateData()
-        {
-            await _dbContext.Database.EnsureCreatedAsync();
-
-            await _userManager.CreateAsync(new ApplicationUser { UserName = "no-profile" }, "11aaAA_");
-            await _userManager.CreateAsync(new ApplicationUser { UserName = "has-profile" }, "11aaAA_");
-
-            var user = await _userManager.FindByNameAsync("has-profile");
-
-            var profile = new Profile()
-            {
-                AccountID = user.Id,
-                Avatar = "avatar-file"
-            };
-            await _dbContext.AddAsync(profile);                
-            await _dbContext.SaveChangesAsync();
-
-            user.ProfileID = profile.Id;
-            _dbContext.Update(user);
-            _dbContext.SaveChanges();
+            return new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: databaseName)
+                .Options;
         }
 
         #region GetUserProfileViewModel Tests
-        [Fact]
+        [TestMethod]
         public async Task GetUserProfileViewModelAsync_NullUser_ThrowsArgumentNullException()
         {
             // Arrange
-            await InitiateData();
-            var sut = new ProfileRepository(_dbContext);
+            DbContextOptions<ApplicationDbContext> options = GetDbContextOptions("GetUserProfileViewModelAsync_NullUser");
 
-            // Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+            using (var dbContext = new ApplicationDbContext(options))
             {
-                await sut.GetUserProfileViewModelAsync(null);
-            });
+                var sut = new ProfileRepository(dbContext);
+
+                // Act & Assert
+                await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () =>
+                {
+                    await sut.GetUserProfileViewModelAsync(null);
+                });
+            }
         }
 
-        [Fact]
+        [TestMethod]
         public async Task GetUserProfileViewModelAsync_NoProfileYet_ReturnsProfileViewModelWithUserInfoOnly()
         {
             // Arrange
-            await InitiateData();            
-            var sut = new ProfileRepository(_dbContext);
-            var user = await _userManager.FindByNameAsync("no-profile");
+            DbContextOptions<ApplicationDbContext> options = GetDbContextOptions("GetUserProfileViewModelAsync_NoProfileYet");
 
-            // Act
-            var pvm = await sut.GetUserProfileViewModelAsync(user);
+            using (var dbContext = new ApplicationDbContext(options))
+            {
+                var sut = new ProfileRepository(dbContext);
+                var user = new ApplicationUser()
+                {
+                    ProfileID = 0,
+                    UserName = "no-profile"
+                };
 
-            // Assert
-            Assert.Equal("no-profile", pvm.UserName);
-            Assert.Equal("", pvm.Avatar);
+                // Act
+                var pvm = await sut.GetUserProfileViewModelAsync(user);
+
+                // Assert
+                Assert.AreEqual("no-profile", pvm.UserName);
+            }
         }
 
-        [Fact]
+        [TestMethod]
         public async Task GetUserProfileViewModelAsync_WithProfile_ReturnsFullProfileViewModel()
         {
             // Arrange
-            await InitiateData();            
-            var user = await _userManager.FindByNameAsync("has-profile");
-            var sut = new ProfileRepository(_dbContext);
+            DbContextOptions<ApplicationDbContext> options = GetDbContextOptions("GetUserProfileViewModelAsync_WithProfile");
 
-            // Act
-            var pvm = await sut.GetUserProfileViewModelAsync(user);
+            using (var dbContext = new ApplicationDbContext(options))
+            {
+                var profile = new Profile()
+                {
+                    Avatar = "avatar-file"
+                };
+                dbContext.Profiles.Add(profile);
 
-            // Assert
-            Assert.Equal("has-profile", pvm.UserName);
-            Assert.Equal("avatar-file", pvm.Avatar);
+                var user = new ApplicationUser()
+                {
+                    ProfileID = profile.Id,
+                    UserName = "with-profile"
+                };
+                dbContext.Users.Add(user);
+                dbContext.SaveChanges();
+
+                var sut = new ProfileRepository(dbContext);
+
+                // Act
+                var pvm = await sut.GetUserProfileViewModelAsync(user);
+
+                // Assert
+                Assert.AreEqual("with-profile", pvm.UserName);
+                Assert.AreEqual("avatar-file", pvm.Avatar);
+            }
         }
         #endregion
 
         #region GetUserProfile Tests
-        [Fact]
+        [TestMethod]
         public async Task GetUserProfileAsync_NullUser_ThrowsArgumentNullException()
         {
             // Arrange
-            await InitiateData();            
-            var sut = new ProfileRepository(_dbContext);
+            DbContextOptions<ApplicationDbContext> options = GetDbContextOptions("GetUserProfileAsync_NullUser");
 
-            // Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+            using (var dbContext = new ApplicationDbContext(options))
             {
-                await sut.GetUserProfileAsync(null);
-            });
+                var sut = new ProfileRepository(dbContext);
+
+                // Act & Assert
+                await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () =>
+                {
+                    await sut.GetUserProfileAsync(null);
+                });
+            }
         }
 
-        [Fact]
+        [TestMethod]
         public async Task GetUserProfileAsync_NoProfileYet_ReturnsNull()
         {
             // Arrange
-            await InitiateData();            
-            var sut = new ProfileRepository(_dbContext);
-            var user = await _userManager.FindByNameAsync("no-profile");
+            DbContextOptions<ApplicationDbContext> options = GetDbContextOptions("GetUserProfileAsync_NoProfileYet");
 
-            // Act
-            var profile = await sut.GetUserProfileAsync(user);
+            using (var dbContext = new ApplicationDbContext(options))
+            {
+                var user = new ApplicationUser()
+                {
+                    ProfileID = 0,
+                    UserName = "no-profile"
+                };
+                var sut = new ProfileRepository(dbContext);
 
-            // Assert
-            Assert.Null(profile);
+                // Act
+                var profile = await sut.GetUserProfileAsync(user);
+
+                // Assert
+                Assert.IsNull(profile);
+            }
         }
 
-        [Fact]
+        [TestMethod]
         public async Task GetUserProfileAsync_WithProfile_ReturnsProfile()
         {
             // Arrange
-            await InitiateData();            
-            var sut = new ProfileRepository(_dbContext);
-            var user = await _userManager.FindByNameAsync("has-profile");
+            DbContextOptions<ApplicationDbContext> options = GetDbContextOptions("GetUserProfileAsync_WithProfile");
 
-            // Act
-            var profile = await sut.GetUserProfileAsync(user);
+            using (var dbContext = new ApplicationDbContext(options))
+            {
+                var profile = new Profile()
+                {
+                    Avatar = "avatar-file"
+                };
+                dbContext.Profiles.Add(profile);
 
-            // Assert
-            Assert.Equal("avatar-file", profile.Avatar);
+                var user = new ApplicationUser()
+                {
+                    ProfileID = profile.Id,
+                    UserName = "has-profile"
+                };
+                dbContext.Users.Add(user);
+                dbContext.SaveChanges();
+
+                var sut = new ProfileRepository(dbContext);
+
+                // Act
+                var _profile = await sut.GetUserProfileAsync(user);
+
+                // Assert
+                Assert.AreEqual(profile.Avatar, _profile.Avatar);
+            }
         }
         #endregion
 
         #region UpdateUserProfileAsync Tests
-        [Fact]
+        [TestMethod]
         public async Task UpdateUserProfileAsync_NullUser_ThrowsArgumentNullException()
         {
             // Arrange
-            await InitiateData();            
-            var sut = new ProfileRepository(_dbContext);
+            DbContextOptions<ApplicationDbContext> options = GetDbContextOptions("UpdateUserProfileAsync_NullUser");
 
-            // Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+            using (var dbContext = new ApplicationDbContext(options))
             {
-                await sut.UpdateUserProfileAsync(null, null);
-            });
+                var sut = new ProfileRepository(dbContext);
+
+                // Act & Assert
+                await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () =>
+                {
+                    await sut.UpdateUserProfileAsync(null, null);
+                });
+            }
         }
 
-        [Fact]
+        [TestMethod]
         public async Task UpdateUserProfileAsync_NullProfile_ThrowsArgumentNullException()
         {
             // Arrange
-            var sut = new ProfileRepository(_dbContext);
+            DbContextOptions<ApplicationDbContext> options = GetDbContextOptions("UpdateUserProfileAsync_NullProfile");
 
-            // Act & Assert
-            await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+            using (var dbContext = new ApplicationDbContext(options))
             {
-                await sut.UpdateUserProfileAsync(new ApplicationUser(), null);
-            });
+                var sut = new ProfileRepository(dbContext);
+                var user = new ApplicationUser();
+
+                // Act & Assert
+                await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () =>
+                {
+                    await sut.UpdateUserProfileAsync(user, null);
+                });
+            }
         }
 
-        [Fact]
+        [TestMethod]
         public async Task UpdateUserProfileAsync_NoProfile_CreateNewProfile()
         {
             // Arrange
-            await InitiateData();            
-            var sut = new ProfileRepository(_dbContext);
-            var user = await _userManager.FindByNameAsync("no-profile");
-            var viewModel = new ProfileViewModel
+            DbContextOptions<ApplicationDbContext> options = GetDbContextOptions("UpdateUserProfileAsync_NoProfile");
+
+            using (var dbContext = new ApplicationDbContext(options))
             {
-                UserName = "new-name",
-                Phone = "18910053802",
-                Address = "address"                
-            };
+                var sut = new ProfileRepository(dbContext);
+                var user = new ApplicationUser()
+                {
+                    UserName = "no-profile"
+                };
+                dbContext.Users.Add(user);
 
-            // Act
-            var updatedUser = await sut.UpdateUserProfileAsync(user, viewModel);
-            await _userManager.UpdateAsync(updatedUser);
+                var viewModel = new ProfileViewModel
+                {
+                    UserName = "new-name",
+                    Address = "address"
+                };
 
-            // Assert
-            var newUser = await _userManager.FindByNameAsync("new-name");
-            Assert.NotNull(newUser);
-            Assert.True(newUser.ProfileID > 0);
-            Assert.Equal("18910053803", newUser.PhoneNumber);
+                // Act
+                var updatedUser = await sut.UpdateUserProfileAsync(user, viewModel);
 
-            var profile = await _dbContext.Profiles.SingleOrDefaultAsync(m => m.Id == user.ProfileID);
-            Assert.NotNull(profile);
-            Assert.Equal("address", profile.Address);
+                // Assert
+                Assert.IsNotNull(updatedUser);
+                Assert.IsTrue(updatedUser.ProfileID > 0);
+
+                var newProfile = await dbContext.Profiles.SingleOrDefaultAsync(m => m.Id == user.ProfileID);
+                Assert.IsNotNull(newProfile);
+                Assert.AreEqual("address", newProfile.Address);
+            }
         }
 
-        [Fact]
+        [TestMethod]
         public async Task UpdateUserProfileAsync_HasProfile_UpdateProfile()
         {
             // Arrange
-            await InitiateData();            
-            var sut = new ProfileRepository(_dbContext);
-            var user = await _userManager.FindByNameAsync("has-profile");
-            var viewModel = new ProfileViewModel
+            DbContextOptions<ApplicationDbContext> options = GetDbContextOptions("UpdateUserProfileAsync_HasProfile");
+
+            using (var dbContext = new ApplicationDbContext(options))
             {
-                UserName = "new-name",
-                Phone = "18910053803",
-                Address = "address"
-            };
+                var profile = new Profile()
+                {
+                    Avatar = "avatar-file"
+                };
+                dbContext.Profiles.Add(profile);
 
-            // Act
-            var updatedUser = await sut.UpdateUserProfileAsync(user, viewModel);
-            await _userManager.UpdateAsync(updatedUser);
+                var user = new ApplicationUser()
+                {
+                    UserName = "has-proflie",
+                    ProfileID = profile.Id
+                };
+                dbContext.Profiles.Add(profile);
+                dbContext.SaveChanges();
 
-            // Assert
-            var newUser = await _userManager.FindByNameAsync("new-name");
-            Assert.NotNull(newUser);
-            Assert.Equal("new-name", newUser.UserName);
-            Assert.Equal("18910053803", newUser.PhoneNumber);
+                var sut = new ProfileRepository(dbContext);
 
-            var profile = await _dbContext.Profiles.SingleOrDefaultAsync(m => m.Id == user.ProfileID);
-            Assert.NotNull(profile);
-            Assert.Equal("address", profile.Address);
+                var viewModel = new ProfileViewModel
+                {
+                    UserName = "new-name",
+                    Address = "address"
+                };
+
+                // Act
+                var updatedUser = await sut.UpdateUserProfileAsync(user, viewModel);
+
+                // Assert
+                Assert.AreEqual("new-name", updatedUser.UserName);
+
+                var updatedProfile = await dbContext.Profiles.SingleOrDefaultAsync(m => m.Id == user.ProfileID);
+                Assert.IsNotNull(updatedProfile);
+                Assert.AreEqual("address", updatedProfile.Address);
+            }
         }
         #endregion
     }

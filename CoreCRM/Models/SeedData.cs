@@ -6,46 +6,58 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics;
 
 namespace CoreCRM.Models
 {
     public static class SeedData
     {
-        public static async Task Initialize(IServiceProvider serviceProvider, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public static async Task Initialize(IServiceProvider serviceProvider)
         {
-            var options = serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>();
-            using (var context = new ApplicationDbContext(options)) {
-                // Create the tables.
-                context.Database.EnsureCreated();
+            var userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
+            var roleManager = serviceProvider.GetService<RoleManager<IdentityRole>>();
+            var dbContext = serviceProvider.GetService<ApplicationDbContext>();
 
-                // Look for any users.
-                if (context.Users.Any()) {
-                    return; // DB has been seeded.
-                }
+            // Create the tables.
+            dbContext.Database.EnsureCreated();
 
-                var profile = new Profile
-                {
-
-                };
-                context.Profiles.Add(profile);
-                await context.SaveChangesAsync();
-
-                var user = new ApplicationUser() {
-                    ProfileID = profile.Id,
-                    UserName = "admin",
-                    Email = "admin@163.com"
-                };
-                var result = await userManager.CreateAsync(user, "11aaAA_");
-
-                profile.AccountID = user.Id;
-                context.Update(profile);
-                await context.SaveChangesAsync();
-
-                await roleManager.CreateAsync(new IdentityRole("Administrator"));
-                await roleManager.CreateAsync(new IdentityRole("Employee"));
-
-                await userManager.AddToRoleAsync(user, "Administrator");
+            // Look for any users.
+            if (dbContext.Users.Any())
+            {
+                return; // DB has been seeded.
             }
+
+            var profile = new Profile
+            {
+
+            };
+            dbContext.Profiles.Add(profile);
+            await dbContext.SaveChangesAsync();
+
+            var user = new ApplicationUser()
+            {
+                ProfileID = profile.Id,
+                UserName = "admin",
+                Email = "admin@163.com"
+            };
+
+            try
+            {
+                var result = await userManager.CreateAsync(user, "admin");
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"{e}");
+            }
+
+            profile.AccountID = user.Id;
+            dbContext.Update(profile);
+            await dbContext.SaveChangesAsync();
+
+            await roleManager.CreateAsync(new IdentityRole("Administrator"));
+            await roleManager.CreateAsync(new IdentityRole("Employee"));
+
+            await userManager.AddToRoleAsync(user, "Administrator");
         }
     }
 }
