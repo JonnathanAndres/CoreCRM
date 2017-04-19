@@ -23,5 +23,5 @@ build:
   project: CoreCRM.sln
   verbosity: minimal
 test_script:
-- dotnet vstest /logger:Appveyor .\Tests\UnitTests\bin\Debug\netcoreapp1.1\UnitTests.dll
+- dotnet test .\Tests\UnitTests\bin\Debug\netcoreapp1.1\UnitTests.dll --test-adapter-path=. --logger=Appveyor
 deploy: off
