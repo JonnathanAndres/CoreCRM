@@ -1,17 +1,26 @@
 version: 0.1.{build}
+os: Visual Studio 2017
+image: Visual Studio 2017
 pull_requests:
   do_not_increment_build_number: true
-image: Visual Studio 2017
+branches:
+  only:
+    - master
+    - release
+clone_depth: 1
 configuration: Debug
 platform: Any CPU
-init:
-- cmd: git config --global core.autocrlf true
 environment:
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
 cache: '%USERPROFILE%\.nuget\packages'
-before_build:
-- appveyor-retry dotnet restore -v Minimal
+init:
+- cmd: git config --global core.autocrlf true
+install:
+- ps: dotnet restore -v Minimal
 build:
   project: CoreCRM.sln
   verbosity: minimal
+test:
+- ps:
+    - vstest.console .\Tests\UnitTests\bin\Debug\netcoreapp1.1\UnitTests.dll /xml .\xunit-results.xml /logger:Appveyor
 deploy: off
