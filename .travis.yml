@@ -12,8 +12,7 @@ matrix:
 
 install:
   - ulimit -n 2048
-  - dotnet restore CoreCRM
-  - dotnet restore CoreCRM.UnitTest
+  - dotnet restore
 script:
   - ulimit -n 2048
-  - dotnet test ./CoreCRM.UnitTest/CoreCRM.UnitTest.csproj
+  - dotnet test ./Tests/UnitTests/UnitTests.csproj
