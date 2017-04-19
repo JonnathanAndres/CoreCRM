@@ -10,7 +10,7 @@ A Customer Relationship Management system implemented with .NET Core and ASP.NET
 | Build server| Platform       | Status |
 |-------------|----------------|--------|
 | AppVeyor    | Windows        |[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/fhhss7dm624hkyjg?svg=true)](https://ci.appveyor.com/project/holmescn/corecrm)|
-| Travis      | macOS/Linux    |![Travis Build Status](https://travis-ci.org/holmescn/CoreCRM.svg?branch=master)|
+| Travis      | macOS/Linux    |[![Travis Build Status](https://travis-ci.org/holmescn/CoreCRM.svg?branch=master)](https://www.travis-ci.org/holmescn/CoreCRM)|
 
 ## 博客
 
