@@ -18,6 +18,7 @@ init:
 - cmd: git config --global core.autocrlf true
 install:
 - ps: dotnet restore -v Minimal
+- ps: dotnet add package Appveyor.TestLogger .\Tests\UnitTests\UnitTests.csproj -v 1.0.2-*
 build:
   project: CoreCRM.sln
   verbosity: minimal
