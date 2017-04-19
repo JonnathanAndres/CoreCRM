@@ -23,5 +23,8 @@ build:
   project: CoreCRM.sln
   verbosity: minimal
 test_script:
-- dotnet test .\Tests\UnitTests\UnitTests.csproj --test-adapter-path:. --logger:Appveyor
+- dotnet test .\Tests\UnitTests\UnitTests.csproj --logger:trx;LogFileName=result.trx
+after_test:
+- ps: $wc = New-Object 'System.Net.WebClient'
+- ps: $wc.UploadFile("https://ci.appveyor.com/api/testresults/mstest/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\Tests\UnitTests\TestREsults\result.trx))
 deploy: off
