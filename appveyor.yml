@@ -8,6 +8,7 @@ branches:
     - master
     - release
 clone_depth: 1
+skip_tags: true
 configuration: Debug
 platform: Any CPU
 environment:
@@ -20,7 +21,6 @@ install:
 build:
   project: CoreCRM.sln
   verbosity: minimal
-test:
-- ps:
-    - vstest.console .\Tests\UnitTests\bin\Debug\netcoreapp1.1\UnitTests.dll /xml .\xunit-results.xml /logger:Appveyor
+test_script:
+- vstest.console .\Tests\UnitTests\bin\Debug\netcoreapp1.1\UnitTests.dll /xml .\xunit-results.xml /logger:Appveyor
 deploy: off
