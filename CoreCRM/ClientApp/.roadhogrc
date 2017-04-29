@@ -4,6 +4,7 @@
     "transform-runtime",
     ["import", { "libraryName": "antd", "style": "css" }]
   ],
+  "multipage": false,
   "env": {
     "development": {
       "extraBabelPlugins": [
@@ -18,9 +19,9 @@
       }
     },
     "production": {
-      "extraBabelPlugins": [
-        "transform-runtime"
-      ]
+      "extraBabelPlugins": [],
+      "library": "App",
+      "libraryTarget": "umd"
     }
   }
 }

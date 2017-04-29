@@ -10,8 +10,8 @@ namespace CoreCRM.Controllers
     {
         public IActionResult Index()
         {
-            //return View();
-            return RedirectToAction("Index", "Profile");
+            return View();
+            //return RedirectToAction("Index", "Profile");
         }
 
         public IActionResult About()
