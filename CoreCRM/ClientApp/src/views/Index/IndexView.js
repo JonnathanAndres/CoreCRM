@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect } from 'dva';
-import styles from './IndexPage.css';
+import styles from './IndexView.css';
 
-function IndexPage() {
+function IndexView() {
   return (
     <div className={styles.normal}>
-      <h1 className={styles.title}>Yay! Welcome to dva!</h1>
+      <h1 className={styles.title}>Yay! Welcome to dva?</h1>
       <div className={styles.welcome} />
       <ul className={styles.list}>
         <li>To get started, edit <code>src/index.js</code> and save to reload.</li>
@@ -15,7 +15,7 @@ function IndexPage() {
   );
 }
 
-IndexPage.propTypes = {
+IndexView.propTypes = {
 };
 
-export default connect()(IndexPage);
+export default connect()(IndexView);
