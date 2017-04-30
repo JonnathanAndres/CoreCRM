@@ -4,7 +4,7 @@ import { renderToString } from 'react-dom/server';
 import dva from 'dva';
 import { RouterContext, createMemoryHistory } from 'dva/router';
 
-import { routes as _routes } from './Index/router';
+import { routes as _routes } from '../views/Index/router';
 
 export function renderHTML(initialState, renderProps) {
   // 1. Initialize
@@ -20,8 +20,8 @@ export function renderHTML(initialState, renderProps) {
   // app.model(require('../models/example'));
 
   // 4. Router
-  app.router(({ routerRenderProps }) => {
-    return <RouterContext {...routerRenderProps} />;
+  app.router(({ renderProps }) => {
+    return <RouterContext {...renderProps} />;
   });
 
   return renderToString(app.start()({ renderProps }));

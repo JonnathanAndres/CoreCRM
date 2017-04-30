@@ -1,5 +1,5 @@
 import dva from 'dva';
-import './Shared/Index.css';
+import '../views/Shared/Index.css';
 
 // 1. Initialize
 const app = dva();
@@ -11,7 +11,7 @@ const app = dva();
 // app.model(require('../models/example'));
 
 // 4. Router
-app.router(require('./Index/router').RouterConfig);
+app.router(require('../views/Index/router').RouterConfig);
 
 // 5. Start
 app.start('#root');

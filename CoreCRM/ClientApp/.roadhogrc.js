@@ -1,4 +1,6 @@
-{
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+
+export default {
   "entry": "src/views/*.js",
   "extraBabelPlugins": [
     "transform-runtime",
@@ -24,4 +26,4 @@
       "libraryTarget": "umd"
     }
   }
-}
+};
