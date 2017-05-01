@@ -20,11 +20,11 @@ export function renderHTML(initialState, renderProps) {
   // app.model(require('../models/example'));
 
   // 4. Router
-  app.router(({ renderProps }) => {
-    return <RouterContext {...renderProps} />;
+  app.router(({ routerRenderProps }) => {
+    return <RouterContext {...routerRenderProps} />;
   });
 
-  return renderToString(app.start()({ renderProps }));
+  return renderToString(app.start()({ routerRenderProps: renderProps }));
 }
 
 export const routes = _routes;

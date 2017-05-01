@@ -1,18 +1,22 @@
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const nodeExternals = require("webpack-node-externals")
+
+const BUILD_TYPE = process.env.BUILD_TYPE || 'client'
+const entry = BUILD_TYPE === 'server' ? 'src/server-side/*.js' : 'src/client-side/*.js'
 
 export default {
-  "entry": "src/views/*.js",
-  "extraBabelPlugins": [
+  entry: entry,
+  outputPath: 'dist/' + BUILD_TYPE,
+  extraBabelPlugins: [
     "transform-runtime",
     ["import", { "libraryName": "antd", "style": "css" }]
   ],
-  "multipage": false,
-  "env": {
-    "development": {
-      "extraBabelPlugins": [
+  multipage: BUILD_TYPE === 'client',
+  env: {
+    development: {
+      extraBabelPlugins: [
         "dva-hmr"
       ],
-      "proxy": {
+      proxy: {
         "/api": {
           "target": "http://jsonplaceholder.typicode.com/",
           "changeOrigin": true,
@@ -20,10 +24,10 @@ export default {
         }
       }
     },
-    "production": {
-      "extraBabelPlugins": [],
+    production: {
       "library": "App",
-      "libraryTarget": "umd"
+      "libraryTarget": "umd",
+      "externals": [nodeExternals()]
     }
   }
 };
