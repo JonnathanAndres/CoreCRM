@@ -2,7 +2,8 @@
 
 A Customer Relationship Management system implemented with .NET Core and ASP.NET Core.
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE.txt)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](http://www.gnu.org/licenses/agpl-3.0)
+
 
 
 ## Build Status
