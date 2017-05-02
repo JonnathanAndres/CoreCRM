@@ -4,7 +4,7 @@ import { renderToString } from 'react-dom/server';
 import dva from 'dva';
 import { RouterContext, createMemoryHistory } from 'dva/router';
 
-import { routes as _routes } from '../views/Index/router';
+import { routes as _routes } from '../views/Home/router';
 
 export function renderHTML(initialState, renderProps) {
   // 1. Initialize
