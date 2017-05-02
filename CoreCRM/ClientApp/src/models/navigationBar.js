@@ -1,9 +1,10 @@
 
 export default {
+  namespace: 'navigationBar',
 
-  namespace: 'example',
+  state: {
 
-  state: {},
+  },
 
   subscriptions: {
     setup({ dispatch, history }) {  // eslint-disable-line

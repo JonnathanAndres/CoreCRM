@@ -1,20 +1,19 @@
 import React from 'react';
-import { Router, Route, IndexRoute } from 'dva/router';
+import { Router, Route, IndexRedirect } from 'dva/router';
 import Layout from '../../components/Layout';
-import Index from './Index';
-import Profile from './Profile';
+import Login from './Login';
 
 export const routes = (
   <Route path="/" component={Layout}>
-    <IndexRoute component={Index} />
-    <Route path="/profile" component={Profile} />
+    <IndexRedirect to="/login" />
+    <Route path="login" component={Login} />
   </Route>
 );
 
 export function RouterConfig({ history }) {
   return (
     <Router history={history}>
-      {routes}
+      { routes }
     </Router>
   );
 }

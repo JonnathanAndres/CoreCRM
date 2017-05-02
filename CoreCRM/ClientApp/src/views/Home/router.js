@@ -1,10 +1,11 @@
 import React from 'react';
-import { Router, Route } from 'dva/router';
-import IndexView from './IndexView';
+import { Router, Route, IndexRoute } from 'dva/router';
+import Layout from '../../components/Layout';
+import Index from './Index';
 
 export const routes = (
-  <Route path="/" component={IndexView}>
-    { /** More routes here. */ }
+  <Route path="/" component={Layout}>
+    <IndexRoute component={Index} />
   </Route>
 );
 
