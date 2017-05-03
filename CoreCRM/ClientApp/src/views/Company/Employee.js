@@ -4,7 +4,7 @@ import { connect } from 'dva';
 
 function Employee() {
   return (
-    <div>Company/Employee</div>
+    <div>办公/组织架构/用户管理</div>
   );
 }
 

@@ -4,7 +4,7 @@ import { connect } from 'dva';
 
 function Profile() {
   return (
-    <div>Profile</div>
+    <div>个人资料</div>
   );
 }
 

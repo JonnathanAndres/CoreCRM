@@ -2,13 +2,13 @@ import React from 'react';
 import { connect } from 'dva';
 // import styles from './Index.css';
 
-function Pool() {
+function View() {
   return (
-    <div>Potential/Pool</div>
+    <div>客户管理/联系人详情</div>
   );
 }
 
-Pool.propTypes = {
+View.propTypes = {
 };
 
-export default connect()(Pool);
+export default connect()(View);

@@ -2,13 +2,13 @@ import React from 'react';
 import { connect } from 'dva';
 // import styles from './Index.css';
 
-function Structure() {
+function Index() {
   return (
-    <div>办公/组织架构</div>
+    <div>客户管理/线索</div>
   );
 }
 
-Structure.propTypes = {
+Index.propTypes = {
 };
 
-export default connect()(Structure);
+export default connect()(Index);

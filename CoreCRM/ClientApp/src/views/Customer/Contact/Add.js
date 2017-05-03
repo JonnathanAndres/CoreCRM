@@ -2,13 +2,13 @@ import React from 'react';
 import { connect } from 'dva';
 // import styles from './Index.css';
 
-function Contact() {
+function Add() {
   return (
-    <div>Customer/Contact</div>
+    <div>客户管理/添加联系人</div>
   );
 }
 
-Contact.propTypes = {
+Add.propTypes = {
 };
 
-export default connect()(Contact);
+export default connect()(Add);

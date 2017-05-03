@@ -4,7 +4,7 @@ import { connect } from 'dva';
 
 function Index() {
   return (
-    <div>User/Index</div>
+    <div>用户管理</div>
   );
 }
 

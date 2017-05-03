@@ -2,13 +2,13 @@ import React from 'react';
 import { connect } from 'dva';
 // import styles from './Index.css';
 
-function Index() {
+function Edit() {
   return (
-    <div>Potential/Index</div>
+    <div>客户管理/编辑线索</div>
   );
 }
 
-Index.propTypes = {
+Edit.propTypes = {
 };
 
-export default connect()(Index);
+export default connect()(Edit);

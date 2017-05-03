@@ -4,7 +4,7 @@ import { connect } from 'dva';
 
 function Care() {
   return (
-    <div>Customer/Care</div>
+    <div>客户管理/客户关怀</div>
   );
 }
 

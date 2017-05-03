@@ -4,7 +4,7 @@ import { connect } from 'dva';
 
 function Statistics() {
   return (
-    <div>Potential/Statistics</div>
+    <div>客户管理/线索统计</div>
   );
 }
 

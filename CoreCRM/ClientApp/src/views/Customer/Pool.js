@@ -4,7 +4,7 @@ import { connect } from 'dva';
 
 function Pool() {
   return (
-    <div>Customer/Pool</div>
+    <div>客户管理/客户池</div>
   );
 }
 
