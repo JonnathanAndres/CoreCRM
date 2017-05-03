@@ -3,8 +3,8 @@
   "scripts": {
     "start": "roadhog server",
     "build": "npm run build:client && npm run build:server",
-    "build:client": "BUILD_TYPE=client roadhog build --debug",
-    "build:server": "BUILD_TYPE=server roadhog build --debug",
+    "build:client": "cross-env BUILD_TYPE=client roadhog build --debug",
+    "build:server": "cross-env BUILD_TYPE=server roadhog build --debug",
     "lint": "eslint --ext .js src test",
     "precommit": "npm run lint"
   },
@@ -25,6 +25,7 @@
     "babel-eslint": "^7.1.1",
     "babel-plugin-dva-hmr": "^0.3.2",
     "babel-plugin-transform-runtime": "^6.9.0",
+    "cross-env": "^4.0.0",
     "eslint": "^3.12.2",
     "eslint-config-airbnb": "^13.0.0",
     "eslint-plugin-import": "^2.2.0",
@@ -33,7 +34,6 @@
     "expect": "^1.20.2",
     "husky": "^0.12.0",
     "redbox-react": "^1.3.2",
-    "roadhog": "^0.6.0",
     "webpack-node-externals": "^1.5.4"
   }
 }
