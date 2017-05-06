@@ -1,4 +1,5 @@
-﻿using CoreCRM.Models;
+﻿using CoreCRM.Areas.Api.Constants;
+using CoreCRM.Models;
 using CoreCRM.Services;
 using CoreCRM.ViewModels.AccountViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -52,8 +53,12 @@ namespace CoreCRM.Areas.Api.Controllers
                 }
                 if (user == null)
                 {
-                    ModelState.AddModelError(string.Empty, "用户不存在");
-                    return View(model);
+                    return Json(new ResultModels.LoginResult()
+                    {
+                        Code = (int)ReturnCode.LOGIN_FAILED_USER_NOT_EXISTS,
+                        Message = Constants.ReturnCode.LOGIN_FAILED_USER_NOT_EXISTS.ToString("G"),
+                        ReturnUrl = returnUrl
+                    });
                 }
 
                 // This doesn't count login failures towards account lockout
@@ -62,39 +67,39 @@ namespace CoreCRM.Areas.Api.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");
-                    return Json(new ReturnModels.LoginModel()
+                    return Json(new ResultModels.LoginResult()
                     {
-                        Code = 0,
-                        Message = "登录成功",
+                        Code = (int)ReturnCode.OK,
+                        Message = ReturnCode.OK.ToString("G"),
                         ReturnUrl = returnUrl
                     });
                 }
                 if (result.IsLockedOut)
                 {
                     _logger.LogWarning(2, "User account locked out.");
-                    return Json(new ReturnModels.LoginModel()
+                    return Json(new ResultModels.LoginResult()
                     {
-                        Code = 1001,
-                        Message = "用户被锁定",
+                        Code = (int)ReturnCode.LOGIN_FAILED_USER_LOCKEDOUT,
+                        Message = ReturnCode.LOGIN_FAILED_USER_LOCKEDOUT.ToString("G"),
                         ReturnUrl = returnUrl
                     });
                 }
                 else
                 {
-                    return Json(new ReturnModels.LoginModel()
+                    return Json(new ResultModels.LoginResult()
                     {
-                        Code = 1002,
-                        Message = "登录失败",
+                        Code = (int)ReturnCode.LOGIN_FAILED,
+                        Message = ReturnCode.LOGIN_FAILED.ToString("G"),
                         ReturnUrl = returnUrl
                     });
                 }
             }
 
             // If we got this far, something failed, redisplay form
-            return Json(new ReturnModels.LoginModel()
+            return Json(new ResultModels.LoginResult()
             {
-                Code = 1002,
-                Message = "登录失败",
+                Code = (int)ReturnCode.LOGIN_FAILED,
+                Message = ReturnCode.LOGIN_FAILED.ToString("G"),
                 ReturnUrl = returnUrl
             });
         }
@@ -109,8 +114,8 @@ namespace CoreCRM.Areas.Api.Controllers
             _logger.LogInformation(4, "User logged out.");
             return Json(new ReturnModels.BaseModel()
             {
-                Code = 0,
-                Message = "退出成功"
+                Code = (int)ReturnCode.OK,
+                Message = ReturnCode.OK.ToString("G")
             });
         }
     }

@@ -41,7 +41,6 @@
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Areas\Api\" />
     <Folder Include="Repositories\" />
     <Folder Include="ViewComponents\" />
     <Folder Include="ViewModels\" />
