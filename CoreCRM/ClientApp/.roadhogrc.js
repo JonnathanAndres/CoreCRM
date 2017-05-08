@@ -17,10 +17,10 @@ export default {
         "dva-hmr"
       ],
       proxy: {
-        "/api": {
+        "/xapi": {
           "target": "http://jsonplaceholder.typicode.com/",
           "changeOrigin": true,
-          "pathRewrite": { "^/api" : "" }
+          "pathRewrite": { "^/xapi" : "" }
         }
       }
     },

@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace CoreCRM.Areas.Api.Controllers
@@ -63,10 +65,17 @@ namespace CoreCRM.Areas.Api.Controllers
 
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, lockoutOnFailure: false);
-                if (result.Succeeded)
+                var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, lockoutOnFailure: false);
+                if (signInResult.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");
+
+                    Response.Cookies.Append("remember-this-week", "T", new Microsoft.AspNetCore.Http.CookieOptions() {
+                        HttpOnly = true,
+                        Path = "/",
+                        Expires = new DateTimeOffset(Utils.GetNextEndOfWeek())
+                    });
+
                     return Json(new ResultModels.LoginResult()
                     {
                         Code = (int)ReturnCode.OK,
@@ -74,34 +83,50 @@ namespace CoreCRM.Areas.Api.Controllers
                         ReturnUrl = returnUrl
                     });
                 }
-                if (result.IsLockedOut)
-                {
-                    _logger.LogWarning(2, "User account locked out.");
-                    return Json(new ResultModels.LoginResult()
-                    {
-                        Code = (int)ReturnCode.LOGIN_FAILED_USER_LOCKEDOUT,
-                        Message = ReturnCode.LOGIN_FAILED_USER_LOCKEDOUT.ToString("G"),
-                        ReturnUrl = returnUrl
-                    });
-                }
                 else
                 {
-                    return Json(new ResultModels.LoginResult()
+                    if (signInResult.IsLockedOut)
                     {
-                        Code = (int)ReturnCode.LOGIN_FAILED,
-                        Message = ReturnCode.LOGIN_FAILED.ToString("G"),
-                        ReturnUrl = returnUrl
-                    });
+                        _logger.LogWarning(2, "User account locked out.");
+                        return Json(new ResultModels.LoginResult()
+                        {
+                            Code = (int)ReturnCode.LOGIN_FAILED_USER_LOCKEDOUT,
+                            Message = ReturnCode.LOGIN_FAILED_USER_LOCKEDOUT.ToString("G"),
+                            ReturnUrl = returnUrl
+                        });
+                    }
+                    else
+                    {
+                        return Json(new ResultModels.LoginResult()
+                        {
+                            Code = (int)ReturnCode.LOGIN_FAILED,
+                            Message = ReturnCode.LOGIN_FAILED.ToString("G"),
+                            ReturnUrl = returnUrl,
+                            Extra = signInResult.ToString()
+                        });
+                    }
                 }
             }
-
-            // If we got this far, something failed, redisplay form
-            return Json(new ResultModels.LoginResult()
+            else
             {
-                Code = (int)ReturnCode.LOGIN_FAILED,
-                Message = ReturnCode.LOGIN_FAILED.ToString("G"),
-                ReturnUrl = returnUrl
-            });
+                // Invalid model.
+                List<string> extras = new List<string>();
+                foreach (var modelState in ViewData.ModelState.Values)
+                {
+                    foreach (var error in modelState.Errors)
+                    {
+                        extras.Add(error.ErrorMessage);
+                    }
+                }
+
+                return Json(new ResultModels.LoginResult()
+                {
+                    Code = (int)ReturnCode.LOGIN_FAILED,
+                    Message = ReturnCode.LOGIN_FAILED.ToString("G"),
+                    ReturnUrl = returnUrl,
+                    Extra = "[" + string.Join(",", extras) + "]";
+                });
+            }
         }
 
         //
@@ -112,7 +137,7 @@ namespace CoreCRM.Areas.Api.Controllers
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation(4, "User logged out.");
-            return Json(new ReturnModels.BaseModel()
+            return Json(new ResultModels.BaseModel()
             {
                 Code = (int)ReturnCode.OK,
                 Message = ReturnCode.OK.ToString("G")

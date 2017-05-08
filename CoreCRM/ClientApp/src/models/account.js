@@ -9,10 +9,11 @@ export default {
     *login({
       payload,
     }, { call }) {
-      const data = yield call(login, payload);
+      const { data } = yield call(login, payload);
 
-      if (data.success) {
-        // Redirect to /User/Dashboard
+      if (data.Code === 0) {
+        const window = window || {};
+        window.location = data.ReturnUrl;
       } else {
         throw data;
       }
