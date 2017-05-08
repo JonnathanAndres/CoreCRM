@@ -1,4 +1,5 @@
 import dva from 'dva';
+import createLoading from 'dva-loading';
 import { hashHistory } from 'dva/router';
 import '../views/Shared/Shared.css';
 
@@ -8,10 +9,10 @@ const app = dva({
 });
 
 // 2. Plugins
-// app.use({});
+app.use(createLoading());
 
 // 3. Model
-app.model(require('../models/navigationBar'));
+app.model(require('../models/account'));
 
 // 4. Router
 app.router(require('../views/Account/router').RouterConfig);
