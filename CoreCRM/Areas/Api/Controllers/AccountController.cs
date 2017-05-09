@@ -124,7 +124,7 @@ namespace CoreCRM.Areas.Api.Controllers
                     Code = (int)ReturnCode.LOGIN_FAILED,
                     Message = ReturnCode.LOGIN_FAILED.ToString("G"),
                     ReturnUrl = returnUrl,
-                    Extra = "[" + string.Join(",", extras) + "]";
+                    Extra = "[" + string.Join(",", extras) + "]"
                 });
             }
         }

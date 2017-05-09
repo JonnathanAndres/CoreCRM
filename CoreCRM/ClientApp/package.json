@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "start": "roadhog server",
-    "deploy": "npm run build:client && npm run build:server && node ./build/deploy.js",
+    "deploy": "node ./build/deploy.js",
     "build": "npm run build:client && npm run build:server",
     "build:client": "cross-env BUILD_TYPE=client roadhog build --debug",
     "build:server": "cross-env BUILD_TYPE=server roadhog build --debug",

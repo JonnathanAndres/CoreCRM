@@ -5,13 +5,14 @@ const NodeExternals = require('webpack-node-externals');
 
 webpack({
   // Configuration Object
-  context: path.join(__dirname, '../dist'),
+  context: path.join(__dirname, '../src'),
   target: 'node',
   entry: {
-    'boot-server': '../src/boot-server.js',
+    'boot-server': './boot-server.js',
   },
   output: {
     path: path.join(__dirname, '..'),
+    filename: '[name].js',
     library: 'BootServer',
     libraryTarget: 'umd',
   },
@@ -19,11 +20,23 @@ webpack({
     rules: [
       {
         test: /\.js$/,
-        exclude: /(node_modules|bower_components)/,
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['es2015']
+            presets: ['es2015'],
+            plugins: [
+              "transform-runtime",
+              ["import", { "libraryName": "antd", "style": "css" }]
+            ]
+          }
+        },
+      },
+      {
+        test: /\.css$/,
+        use: {
+          loader: 'css-loader',
+          options: {
+            
           }
         },
       },

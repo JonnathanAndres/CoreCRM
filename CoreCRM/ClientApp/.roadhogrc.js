@@ -6,28 +6,21 @@ const entry = BUILD_TYPE === 'server' ? 'src/server-side/*.js' : 'src/client-sid
 export default {
   entry: entry,
   outputPath: 'dist/' + BUILD_TYPE,
+  multipage: BUILD_TYPE === 'client',
   extraBabelPlugins: [
     "transform-runtime",
-    ["import", { "libraryName": "antd", "style": "css" }]
   ],
-  multipage: BUILD_TYPE === 'client',
   env: {
     development: {
       extraBabelPlugins: [
-        "dva-hmr"
-      ],
-      proxy: {
-        "/xapi": {
-          "target": "http://jsonplaceholder.typicode.com/",
-          "changeOrigin": true,
-          "pathRewrite": { "^/xapi" : "" }
-        }
-      }
+        "dva-hmr",
+        ["import", { "libraryName": "antd", "style": "css" }]
+      ]
     },
-    production: {
-      "library": "App",
-      "libraryTarget": "umd",
-      "externals": [nodeExternals()]
-    }
+    production: Object.assign({
+    }, (BUILD_TYPE === 'server' ? {
+      library: "BootServer",
+      libraryTarget: "umd",
+    } : {})),
   }
 };
