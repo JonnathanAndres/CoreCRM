@@ -3,8 +3,8 @@ import { Router, Route, IndexRedirect } from 'dva/router';
 import Login from './Login';
 
 export const routes = (
-  <Route path="/">
-    <IndexRedirect to="/login" />
+  <Route>
+    <IndexRedirect to="login" />
     <Route path="login" component={Login} />
   </Route>
 );

@@ -5,8 +5,8 @@ import Structure from './Structure';
 import Employee from './Employee';
 
 export const routes = (
-  <Route path="/" component={Layout}>
-    <IndexRedirect to="/structure" />
+  <Route component={Layout}>
+    <IndexRedirect to="structure" />
     <Route path="structure" component={Structure} />
     <Route path="employee" component={Employee} />
   </Route>

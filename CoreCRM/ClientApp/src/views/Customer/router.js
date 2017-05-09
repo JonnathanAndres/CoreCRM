@@ -22,7 +22,7 @@ import PotentialPool from './Potential/Pool';
 import PotentialStatistics from './Potential/Statistics';
 
 export const routes = (
-  <Route path="/" component={Layout}>
+  <Route component={Layout}>
     <IndexRoute component={Index} />
     <Route path="add" component={Add} />
     <Route path="edit" component={Edit} />

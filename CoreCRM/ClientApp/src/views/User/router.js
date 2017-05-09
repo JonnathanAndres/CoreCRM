@@ -5,7 +5,7 @@ import Index from './Index';
 import Profile from './Profile';
 
 export const routes = (
-  <Route path="/" component={Layout}>
+  <Route component={Layout}>
     <IndexRoute component={Index} />
     <Route path="profile" component={Profile} />
   </Route>
