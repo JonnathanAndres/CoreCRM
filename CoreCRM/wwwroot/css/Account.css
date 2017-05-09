@@ -1,0 +1,41 @@
+.form___2SlUN {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -160px 0 0 -160px;
+  width: 320px;
+  height: 320px;
+  padding: 36px;
+  box-shadow: 0 0 100px rgba(0, 0, 0, 0.08);
+}
+.form___2SlUN button {
+  width: 100%;
+}
+.form___2SlUN p {
+  color: #cccccc;
+  text-align: center;
+  margin-top: 16px;
+}
+.form___2SlUN p span:first-child {
+  margin-right: 16px;
+}
+.logo___1AF-w {
+  text-align: center;
+  height: 40px;
+  line-height: 40px;
+  cursor: pointer;
+  margin-bottom: 24px;
+}
+.logo___1AF-w img {
+  width: 40px;
+  margin-right: 8px;
+}
+.logo___1AF-w span {
+  vertical-align: text-bottom;
+  font-size: 16px;
+  display: inline-block;
+}
+.ant-spin-container___2wIXz,
+.ant-spin-nested-loading___3kqtV {
+  height: 100%;
+}

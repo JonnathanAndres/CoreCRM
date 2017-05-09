@@ -1,13 +1,13 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("aspnet-prerendering"), require("fs"), require("path"), require("react-router"));
+		module.exports = factory(require("aspnet-prerendering"), require("react-router"));
 	else if(typeof define === 'function' && define.amd)
-		define(["aspnet-prerendering", "fs", "path", "react-router"], factory);
+		define(["aspnet-prerendering", "react-router"], factory);
 	else if(typeof exports === 'object')
-		exports["BootServer"] = factory(require("aspnet-prerendering"), require("fs"), require("path"), require("react-router"));
+		exports["BootServer"] = factory(require("aspnet-prerendering"), require("react-router"));
 	else
-		root["BootServer"] = factory(root["aspnet-prerendering"], root["fs"], root["path"], root["react-router"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_1__, __WEBPACK_EXTERNAL_MODULE_2__, __WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_4__) {
+		root["BootServer"] = factory(root["aspnet-prerendering"], root["react-router"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_1__, __WEBPACK_EXTERNAL_MODULE_2__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -73,36 +73,20 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ (function(module, exports) {
 
-module.exports = function(module) {
-	if(!module.webpackPolyfill) {
-		module.deprecate = function() {};
-		module.paths = [];
-		// module.parent = undefined by default
-		if(!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			get: function() {
-				return module.l;
-			}
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			get: function() {
-				return module.i;
-			}
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
-};
-
+function webpackEmptyContext(req) {
+	throw new Error("Cannot find module '" + req + "'.");
+}
+webpackEmptyContext.keys = function() { return []; };
+webpackEmptyContext.resolve = webpackEmptyContext;
+module.exports = webpackEmptyContext;
+webpackEmptyContext.id = 0;
 
 /***/ }),
 /* 1 */
@@ -114,74 +98,38 @@ module.exports = require("aspnet-prerendering");
 /* 2 */
 /***/ (function(module, exports) {
 
-module.exports = require("fs");
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports) {
-
-module.exports = require("path");
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
 module.exports = require("react-router");
 
 /***/ }),
-/* 5 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-/* WEBPACK VAR INJECTION */(function(module) {
+var { match } = __webpack_require__(2);
+var { createServerRenderer } = __webpack_require__(1);
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+module.exports = createServerRenderer(function(params) {
+    return new Promise(function (resolve, reject) {
+        var re = /^\/([^\/]*)\/?([^\/]*)\??/;
+        var matched = params.location.path.match(re);
+        var controller = matched[1];
+        var action = matched[2] !== '' ? matched[2] : 'Index';
+        //var codeFile = './dist/' + controller + action;
+        var codeFile = './dist/server/Index';
+        var App = !(function webpackMissingModule() { var e = new Error("Cannot find module \".\""); e.code = 'MODULE_NOT_FOUND'; throw e; }());
 
-var _fs = __webpack_require__(2);
+        match({
+            routes: App.routes,
+            location: params.location.path
+        }, function (err, redirectLocation, renderProps) {
+            if (err) throw new Error("Route match failed: " + err);
 
-var _fs2 = _interopRequireDefault(_fs);
+            if (redirectLocation) new Error("I don't know how to redirect.");
 
-var _path = __webpack_require__(3);
-
-var _path2 = _interopRequireDefault(_path);
-
-var _reactRouter = __webpack_require__(4);
-
-var _aspnetPrerendering = __webpack_require__(1);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = (0, _aspnetPrerendering.createServerRenderer)(function (params) {
-  return new Promise(function (resolve) {
-    var re = /^([^/]+)(\/?.*)/;
-    var matched = params.location.path.match(re);
-    var controller = matched[1];
-    var path = matched[2];
-
-    var filename = './dist/server/' + constructor + '.js';
-    var src = _fs2.default.readFileSync(path.resolve(filename), 'urf8');
-    var Module = module.constructor;
-    var m = new Module();
-    m._compile(src, null); // eslint-disable-line
-
-    var BootServer = m.exports.BootServer;
-
-
-    (0, _reactRouter.match)({
-      routes: BootServer.routes,
-      location: path
-    }, function (err, redirectLocation, renderProps) {
-      if (err) throw new Error('Route match failed: ' + err);
-      if (redirectLocation) throw new Error('I don\'t know how to redirect: ' + redirectLocation + '.');
-
-      var initialState = params.data || {};
-      resolve({ html: BootServer.renderHTML(initialState, renderProps) });
+            var initialState = {};
+            resolve({ html: App.renderHTML(initialState, renderProps)});
+        })
     });
-  });
 });
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)(module)))
 
 /***/ })
 /******/ ]);
