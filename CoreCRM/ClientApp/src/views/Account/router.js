@@ -12,7 +12,9 @@ export const routes = (
 export function RouterConfig({ history }) {
   return (
     <Router history={history}>
-      { routes }
+      <Route path="/">
+        { routes }
+      </Route>
     </Router>
   );
 }

@@ -9,18 +9,20 @@ export default {
   multipage: BUILD_TYPE === 'client',
   extraBabelPlugins: [
     "transform-runtime",
+    ["import", { "libraryName": "antd", "style": "css" }]
   ],
   env: {
     development: {
       extraBabelPlugins: [
         "dva-hmr",
-        ["import", { "libraryName": "antd", "style": "css" }]
       ]
     },
     production: Object.assign({
     }, (BUILD_TYPE === 'server' ? {
-      library: "BootServer",
+      library: "ServerSide",
       libraryTarget: "umd",
-    } : {})),
+    } : {}), (BUILD_TYPE === 'server' ? {
+      externals: [nodeExternals()]
+    } : {}))
   }
 };

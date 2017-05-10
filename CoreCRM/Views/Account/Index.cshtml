@@ -8,7 +8,11 @@
     ViewData["Title"] = "Log in";
 }
 
-<div id="my-spa" asp-prerender-module="ClientApp/boot-server"></div>
+<div id="root" asp-prerender-module="ClientApp/boot-server"></div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Account.css" asp-append-version="true" />
+}
 
 @section Scripts {
     <script type="text/javascript" src="~/js/Account.js"></script>

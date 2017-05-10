@@ -1859,16 +1859,10 @@ webpackJsonp([2],{
 	    // small => sm
 
 
-	    var sizeCls = '';
-	    switch (size) {
-	        case 'large':
-	            sizeCls = 'lg';
-	            break;
-	        case 'small':
-	            sizeCls = 'sm';
-	        default:
-	            break;
-	    }
+	    var sizeCls = {
+	        large: 'lg',
+	        small: 'sm'
+	    }[size] || '';
 	    var classes = (0, _classnames2["default"])(prefixCls, (0, _defineProperty3["default"])({}, prefixCls + '-' + sizeCls, sizeCls), className);
 	    return _react2["default"].createElement('div', (0, _extends3["default"])({}, others, { className: classes }));
 	}
@@ -1943,19 +1937,17 @@ webpackJsonp([2],{
 	    return typeof str === 'string';
 	}
 	// Insert one space between two chinese characters automatically.
-	function insertSpace(child, needInserted) {
+	function insertSpace(child) {
 	    // Check the child if is undefined or null.
 	    if (child == null) {
 	        return;
 	    }
-	    var SPACE = needInserted ? ' ' : '';
-	    // strictNullChecks oops.
-	    if (typeof child !== 'string' && typeof child !== 'number' && isString(child.type) && isTwoCNChar(child.props.children)) {
-	        return _react2["default"].cloneElement(child, {}, child.props.children.split('').join(SPACE));
+	    if (isString(child.type) && isTwoCNChar(child.props.children)) {
+	        return _react2["default"].cloneElement(child, {}, child.props.children.split('').join(' '));
 	    }
-	    if (typeof child === 'string') {
+	    if (isString(child)) {
 	        if (isTwoCNChar(child)) {
-	            child = child.split('').join(SPACE);
+	            child = child.split('').join(' ');
 	        }
 	        return _react2["default"].createElement(
 	            'span',
@@ -2006,7 +1998,7 @@ webpackJsonp([2],{
 	        if (currentLoading) {
 	            clearTimeout(this.delayTimeout);
 	        }
-	        if (typeof loading !== 'boolean' && loading && loading.delay) {
+	        if (loading && loading.delay) {
 	            this.delayTimeout = setTimeout(function () {
 	                return _this2.setState({ loading: loading });
 	            }, loading.delay);
@@ -2044,23 +2036,14 @@ webpackJsonp([2],{
 	        // large => lg
 	        // small => sm
 
-	        var sizeCls = '';
-	        switch (size) {
-	            case 'large':
-	                sizeCls = 'lg';
-	                break;
-	            case 'small':
-	                sizeCls = 'sm';
-	            default:
-	                break;
-	        }
+	        var sizeCls = {
+	            large: 'lg',
+	            small: 'sm'
+	        }[size] || '';
 	        var classes = (0, _classnames2["default"])(prefixCls, (_classNames = {}, (0, _defineProperty3["default"])(_classNames, prefixCls + '-' + type, type), (0, _defineProperty3["default"])(_classNames, prefixCls + '-' + shape, shape), (0, _defineProperty3["default"])(_classNames, prefixCls + '-' + sizeCls, sizeCls), (0, _defineProperty3["default"])(_classNames, prefixCls + '-icon-only', !children && icon), (0, _defineProperty3["default"])(_classNames, prefixCls + '-loading', loading), (0, _defineProperty3["default"])(_classNames, prefixCls + '-clicked', clicked), (0, _defineProperty3["default"])(_classNames, prefixCls + '-background-ghost', ghost), _classNames), className);
 	        var iconType = loading ? 'loading' : icon;
 	        var iconNode = iconType ? _react2["default"].createElement(_icon2["default"], { type: iconType }) : null;
-	        var needInserted = _react2["default"].Children.count(children) === 1 && !iconType;
-	        var kids = _react2["default"].Children.map(children, function (child) {
-	            return insertSpace(child, needInserted);
-	        });
+	        var kids = _react2["default"].Children.map(children, insertSpace);
 	        return _react2["default"].createElement(
 	            'button',
 	            (0, _extends3["default"])({}, (0, _omit2["default"])(others, ['loading', 'clicked']), { type: htmlType || 'button', className: classes, onMouseUp: this.handleMouseUp, onClick: this.handleClick }),
@@ -9960,7 +9943,11 @@ webpackJsonp([2],{
 	  return _react2.default.createElement(
 	    _router.Router,
 	    { history: history },
-	    routes
+	    _react2.default.createElement(
+	      _router.Route,
+	      { path: '/' },
+	      routes
+	    )
 	  );
 	}
 

@@ -8,39 +8,11 @@ webpack({
   context: path.join(__dirname, '../src'),
   target: 'node',
   entry: {
-    'boot-server': './boot-server.js',
+    'dummy': './dummy.js',
   },
   output: {
-    path: path.join(__dirname, '..'),
+    path: path.join(__dirname, '../dist'),
     filename: '[name].js',
-    library: 'BootServer',
-    libraryTarget: 'umd',
-  },
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['es2015'],
-            plugins: [
-              "transform-runtime",
-              ["import", { "libraryName": "antd", "style": "css" }]
-            ]
-          }
-        },
-      },
-      {
-        test: /\.css$/,
-        use: {
-          loader: 'css-loader',
-          options: {
-            
-          }
-        },
-      },
-    ],
   },
   externals: [NodeExternals()],
   plugins: [
@@ -61,8 +33,10 @@ webpack({
   if (err || stats.hasErrors()) {
     // Handle errors here
     console.log(err); // eslint-disable-line
-    console.log(stats.compilation.errors); // eslint-disable-line
+    stats.compilation.errors.forEach((error) => {
+      console.log(error); // eslint-disable-line
+    });
   }
   // Done processing
-  console.log('Process done.'); // eslint-disable-line
+  console.log('Deploy done.'); // eslint-disable-line
 });

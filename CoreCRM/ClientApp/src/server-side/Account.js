@@ -1,10 +1,11 @@
 import React from 'react';
+import dva from 'dva';
+import createLoading from 'dva-loading';
+import { RouterContext, createMemoryHistory } from 'dva/router';
 import { renderToString } from 'react-dom/server';
 
-import dva from 'dva';
-import { RouterContext, createMemoryHistory } from 'dva/router';
-
-import { routes as _routes } from '../views/Home/router';
+import { routes as _routes } from '../views/Account/router';
+import '../views/Shared/Shared.css';
 
 export function renderHTML(initialState, renderProps) {
   // 1. Initialize
@@ -14,9 +15,10 @@ export function renderHTML(initialState, renderProps) {
   });
 
   // 2. Plugins
-  // app.use({});
+  app.use(createLoading());
 
   // 3. Model
+  app.model(require('../models/account')); // eslint-disable-line
 
   // 4. Router
   app.router(({ routerRenderProps }) => {
