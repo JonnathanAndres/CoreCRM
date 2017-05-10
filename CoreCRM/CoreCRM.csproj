@@ -11,6 +11,7 @@
   <PropertyGroup>
     <DefaultItemExcludes>$(DefaultItemExcludes);frontend\**\*</DefaultItemExcludes>
     <DefaultItemExcludes>$(DefaultItemExcludes);ClientApp\**\*</DefaultItemExcludes>
+    <DefaultItemExcludes>$(DefaultItemExcludes);wwwroot\**\*</DefaultItemExcludes>
   </PropertyGroup>
 
   <PropertyGroup>

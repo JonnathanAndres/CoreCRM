@@ -7,6 +7,6 @@ namespace CoreCRM.Areas.Api.ResultModels
 {
     public class LoginResult : BaseModel
     {
-        public string ReturnUrl { get; set; }
+        public string Errors { get; set; }
     }
 }

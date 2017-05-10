@@ -1076,14 +1076,17 @@
           animation-name: none;
   border-color: rgba(0, 0, 0, 0.25);
 }
+.ant-checkbox-disabled .ant-checkbox-input {
+  cursor: not-allowed;
+}
 .ant-checkbox-disabled .ant-checkbox-inner {
   border-color: #d9d9d9 !important;
-  background-color: #f3f3f3;
+  background-color: #f7f7f7;
 }
 .ant-checkbox-disabled .ant-checkbox-inner:after {
   -webkit-animation-name: none;
           animation-name: none;
-  border-color: #f3f3f3;
+  border-color: #f7f7f7;
 }
 .ant-checkbox-disabled + span {
   color: rgba(0, 0, 0, 0.25);
@@ -5044,21 +5047,30 @@ textarea.ant-input {
 }
 .ant-input-group.ant-input-group-compact > .ant-select > .ant-select-selection,
 .ant-input-group.ant-input-group-compact > .ant-calendar-picker .ant-input,
-.ant-input-group.ant-input-group-compact > .ant-select-auto-complete .ant-input {
+.ant-input-group.ant-input-group-compact > .ant-select-auto-complete .ant-input,
+.ant-input-group.ant-input-group-compact > .ant-cascader-picker .ant-input,
+.ant-input-group.ant-input-group-compact > .ant-mention-wrapper .ant-mention-editor,
+.ant-input-group.ant-input-group-compact > .ant-time-picker .ant-time-picker-input {
   border-radius: 0;
   border-right-width: 0;
 }
 .ant-input-group.ant-input-group-compact > *:first-child,
 .ant-input-group.ant-input-group-compact > .ant-select:first-child > .ant-select-selection,
 .ant-input-group.ant-input-group-compact > .ant-calendar-picker:first-child .ant-input,
-.ant-input-group.ant-input-group-compact > .ant-select-auto-complete:first-child .ant-input {
+.ant-input-group.ant-input-group-compact > .ant-select-auto-complete:first-child .ant-input,
+.ant-input-group.ant-input-group-compact > .ant-cascader-picker:first-child .ant-input,
+.ant-input-group.ant-input-group-compact > .ant-mention-wrapper:first-child .ant-mention-editor,
+.ant-input-group.ant-input-group-compact > .ant-time-picker:first-child .ant-time-picker-input {
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
 }
 .ant-input-group.ant-input-group-compact > *:last-child,
 .ant-input-group.ant-input-group-compact > .ant-select:last-child > .ant-select-selection,
 .ant-input-group.ant-input-group-compact > .ant-calendar-picker:last-child .ant-input,
-.ant-input-group.ant-input-group-compact > .ant-select-auto-complete:last-child .ant-input {
+.ant-input-group.ant-input-group-compact > .ant-select-auto-complete:last-child .ant-input,
+.ant-input-group.ant-input-group-compact > .ant-cascader-picker:last-child .ant-input,
+.ant-input-group.ant-input-group-compact > .ant-mention-wrapper:last-child .ant-mention-editor,
+.ant-input-group.ant-input-group-compact > .ant-time-picker:last-child .ant-time-picker-input {
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
   border-right-width: 1px;

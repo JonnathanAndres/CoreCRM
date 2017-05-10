@@ -13,18 +13,27 @@ using CoreCRM.Models;
 using CoreCRM.Services;
 using CoreCRM.ViewModels.AccountViewModels;
 using CoreCRM.Models.AccountViewModels;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace CoreCRM.Controllers
 {
     public class AccountController : Controller
     {
         //
-        // GET: /Account/Login
+        // GET: /Account
         [HttpGet]
-        public IActionResult Index(string returnUrl)
+        public IActionResult Index(string path, string returnUrl)
         {
-            ViewData["ReturnUrl"] = returnUrl;
-            return View();
+            if (path != null)
+            {
+                string url = $"/Account?returnUrl={returnUrl}#/{path}";
+                return new RedirectResult(url);
+            }
+            else
+            {
+                ViewData["ReturnUrl"] = returnUrl;
+                return View();
+            }
         }
 
         //

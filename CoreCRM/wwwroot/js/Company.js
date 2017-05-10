@@ -3,7 +3,7 @@ webpackJsonp([5],{
 /***/ 0:
 /***/ (function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(574);
+	module.exports = __webpack_require__(576);
 
 
 /***/ }),
@@ -633,7 +633,7 @@ webpackJsonp([5],{
 
 /***/ }),
 
-/***/ 29:
+/***/ 30:
 /***/ (function(module, exports) {
 
 	module.exports = function(arr, obj){
@@ -646,7 +646,7 @@ webpackJsonp([5],{
 
 /***/ }),
 
-/***/ 30:
+/***/ 31:
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -842,7 +842,7 @@ webpackJsonp([5],{
 
 /***/ }),
 
-/***/ 31:
+/***/ 32:
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -875,7 +875,7 @@ webpackJsonp([5],{
 
 /***/ }),
 
-/***/ 32:
+/***/ 33:
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1753,7 +1753,7 @@ webpackJsonp([5],{
 	    value: true
 	});
 
-	var _cssAnimation = __webpack_require__(30);
+	var _cssAnimation = __webpack_require__(31);
 
 	var _cssAnimation2 = _interopRequireDefault(_cssAnimation);
 
@@ -2172,7 +2172,7 @@ webpackJsonp([5],{
 /***/ }),
 
 /***/ 57:
-[589, 65],
+[593, 65],
 
 /***/ 58:
 /***/ (function(module, exports, __webpack_require__) {
@@ -2333,7 +2333,7 @@ webpackJsonp([5],{
 /***/ }),
 
 /***/ 59:
-[589, 66],
+[593, 66],
 
 /***/ 60:
 /***/ (function(module, exports, __webpack_require__) {
@@ -2343,9 +2343,9 @@ webpackJsonp([5],{
 	 */
 
 	try {
-	  var index = __webpack_require__(29);
+	  var index = __webpack_require__(30);
 	} catch (err) {
-	  var index = __webpack_require__(29);
+	  var index = __webpack_require__(30);
 	}
 
 	/**
@@ -3397,7 +3397,7 @@ webpackJsonp([5],{
 
 	var _AnimateChild2 = _interopRequireDefault(_AnimateChild);
 
-	var _util = __webpack_require__(31);
+	var _util = __webpack_require__(32);
 
 	var _util2 = _interopRequireDefault(_util);
 
@@ -3766,11 +3766,11 @@ webpackJsonp([5],{
 
 	var _propTypes2 = _interopRequireDefault(_propTypes);
 
-	var _cssAnimation = __webpack_require__(30);
+	var _cssAnimation = __webpack_require__(31);
 
 	var _cssAnimation2 = _interopRequireDefault(_cssAnimation);
 
-	var _util = __webpack_require__(31);
+	var _util = __webpack_require__(32);
 
 	var _util2 = _interopRequireDefault(_util);
 
@@ -4146,7 +4146,7 @@ webpackJsonp([5],{
 
 	var _createReactClass2 = _interopRequireDefault(_createReactClass);
 
-	var _MenuMixin = __webpack_require__(32);
+	var _MenuMixin = __webpack_require__(33);
 
 	var _MenuMixin2 = _interopRequireDefault(_MenuMixin);
 
@@ -5253,7 +5253,7 @@ webpackJsonp([5],{
 	  value: true
 	});
 
-	var _typeof2 = __webpack_require__(34);
+	var _typeof2 = __webpack_require__(29);
 
 	var _typeof3 = _interopRequireDefault(_typeof2);
 
@@ -5273,7 +5273,7 @@ webpackJsonp([5],{
 
 	var _createReactClass2 = _interopRequireDefault(_createReactClass);
 
-	var _MenuMixin = __webpack_require__(32);
+	var _MenuMixin = __webpack_require__(33);
 
 	var _MenuMixin2 = _interopRequireDefault(_MenuMixin);
 
@@ -5631,7 +5631,7 @@ webpackJsonp([5],{
 
 /***/ }),
 
-/***/ 278:
+/***/ 280:
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5665,7 +5665,7 @@ webpackJsonp([5],{
 
 /***/ }),
 
-/***/ 279:
+/***/ 281:
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5699,7 +5699,7 @@ webpackJsonp([5],{
 
 /***/ }),
 
-/***/ 280:
+/***/ 282:
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5720,11 +5720,11 @@ webpackJsonp([5],{
 
 	var _Layout2 = _interopRequireDefault(_Layout);
 
-	var _Structure = __webpack_require__(279);
+	var _Structure = __webpack_require__(281);
 
 	var _Structure2 = _interopRequireDefault(_Structure);
 
-	var _Employee = __webpack_require__(278);
+	var _Employee = __webpack_require__(280);
 
 	var _Employee2 = _interopRequireDefault(_Employee);
 
@@ -5750,7 +5750,7 @@ webpackJsonp([5],{
 
 /***/ }),
 
-/***/ 574:
+/***/ 576:
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -5777,14 +5777,14 @@ webpackJsonp([5],{
 	app.model(__webpack_require__(86));
 
 	// 4. Router
-	app.router(__webpack_require__(280).RouterConfig);
+	app.router(__webpack_require__(282).RouterConfig);
 
 	// 5. Start
 	app.start('#root');
 
 /***/ }),
 
-/***/ 589:
+/***/ 593:
 /***/ (function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
 
 	'use strict';

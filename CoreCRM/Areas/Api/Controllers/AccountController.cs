@@ -1,15 +1,15 @@
-﻿using CoreCRM.Areas.Api.Constants;
-using CoreCRM.Models;
-using CoreCRM.Services;
-using CoreCRM.ViewModels.AccountViewModels;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using System;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using CoreCRM.Models;
+using CoreCRM.Services;
+using CoreCRM.Areas.Api.Constants;
+using CoreCRM.Areas.Api.ViewModels.AccountViewModels;
 
 namespace CoreCRM.Areas.Api.Controllers
 {
@@ -43,8 +43,7 @@ namespace CoreCRM.Areas.Api.Controllers
         // POST: /Account/Login
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<JsonResult> Login(LoginViewModel model, string returnUrl = null)
+        public async Task<JsonResult> Login([FromBody] LoginViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -59,13 +58,12 @@ namespace CoreCRM.Areas.Api.Controllers
                     {
                         Code = (int)ReturnCode.LOGIN_FAILED_USER_NOT_EXISTS,
                         Message = Constants.ReturnCode.LOGIN_FAILED_USER_NOT_EXISTS.ToString("G"),
-                        ReturnUrl = returnUrl
                     });
                 }
 
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, lockoutOnFailure: false);
+                var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberThisWeek, lockoutOnFailure: false);
                 if (signInResult.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");
@@ -79,8 +77,7 @@ namespace CoreCRM.Areas.Api.Controllers
                     return Json(new ResultModels.LoginResult()
                     {
                         Code = (int)ReturnCode.OK,
-                        Message = ReturnCode.OK.ToString("G"),
-                        ReturnUrl = returnUrl
+                        Message = ReturnCode.OK.ToString("G")
                     });
                 }
                 else
@@ -91,8 +88,7 @@ namespace CoreCRM.Areas.Api.Controllers
                         return Json(new ResultModels.LoginResult()
                         {
                             Code = (int)ReturnCode.LOGIN_FAILED_USER_LOCKEDOUT,
-                            Message = ReturnCode.LOGIN_FAILED_USER_LOCKEDOUT.ToString("G"),
-                            ReturnUrl = returnUrl
+                            Message = ReturnCode.LOGIN_FAILED_USER_LOCKEDOUT.ToString("G")
                         });
                     }
                     else
@@ -101,8 +97,7 @@ namespace CoreCRM.Areas.Api.Controllers
                         {
                             Code = (int)ReturnCode.LOGIN_FAILED,
                             Message = ReturnCode.LOGIN_FAILED.ToString("G"),
-                            ReturnUrl = returnUrl,
-                            Extra = signInResult.ToString()
+                            Errors = signInResult.ToString()
                         });
                     }
                 }
@@ -115,7 +110,7 @@ namespace CoreCRM.Areas.Api.Controllers
                 {
                     foreach (var error in modelState.Errors)
                     {
-                        extras.Add(error.ErrorMessage);
+                        extras.Add($"\"{error.ErrorMessage}\"");
                     }
                 }
 
@@ -123,8 +118,7 @@ namespace CoreCRM.Areas.Api.Controllers
                 {
                     Code = (int)ReturnCode.LOGIN_FAILED,
                     Message = ReturnCode.LOGIN_FAILED.ToString("G"),
-                    ReturnUrl = returnUrl,
-                    Extra = "[" + string.Join(",", extras) + "]"
+                    Errors = "[" + string.Join(",", extras) + "]"
                 });
             }
         }

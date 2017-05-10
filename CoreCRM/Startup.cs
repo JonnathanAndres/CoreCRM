@@ -115,16 +115,17 @@ namespace CoreCRM
             app.UseMvc(routes =>
             {
                 routes.MapRoute(name: "areaRoute",
-                    template: "{area:exists}/{controller}/{action}");
+                    template: "{area}/{controller}/{action}");
 
                 routes.MapRoute(
-                    name: "default",
+                    name: "redirectRoute",
                     template: "{controller}/{*path}",
                     defaults: new { controler="Home", action="Index" });
 
-                routes.MapSpaFallbackRoute(
-                    name: "spa-fallback",
-                    defaults: new { controller = "Account", action = "Index", path = "/login" });
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller}",
+                    defaults: new { controler = "Home", action = "Index" });
             });
 
             // Seed test data.
