@@ -1,9 +1,4 @@
-﻿@using System.Collections.Generic
-@using Microsoft.AspNetCore.Http
-@using Microsoft.AspNetCore.Http.Authentication
-@model CoreCRM.ViewModels.AccountViewModels.LoginViewModel
-@inject SignInManager<ApplicationUser> SignInManager
-@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+﻿@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @{
     ViewData["Title"] = "登录";
     var ThisController = "Account";
