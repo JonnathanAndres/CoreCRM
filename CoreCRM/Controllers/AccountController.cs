@@ -1,19 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Net;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 using CoreCRM.Models;
 using CoreCRM.Services;
 using CoreCRM.ViewModels.AccountViewModels;
 using CoreCRM.Models.AccountViewModels;
-using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace CoreCRM.Controllers
 {
@@ -26,7 +27,13 @@ namespace CoreCRM.Controllers
         {
             if (path != null)
             {
-                string url = $"/Account?returnUrl={returnUrl}#/{path}";
+                string url = Url.Action("Index", ControllerContext.ActionDescriptor.ControllerName);
+                if (returnUrl != null) {
+                    url = $"{url}?returnUrl={WebUtility.UrlEncode(returnUrl)}";
+                }
+                url = $"{url}#/{path}";
+
+                Response.Cookies.Append("client-path", path);
                 return new RedirectResult(url);
             }
             else

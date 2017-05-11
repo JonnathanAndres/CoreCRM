@@ -9,7 +9,7 @@ namespace CoreCRM
     {
         public static DateTime GetNextEndOfWeek()
         {
-            var today = new DateTime();
+            var today = DateTime.Now.Date;
             var endOfWeek = new DateTime(today.Year, today.Month, today.Day, 23, 59, 59);
             return endOfWeek.AddDays(7 - (int)today.DayOfWeek);
         }

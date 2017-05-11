@@ -43,6 +43,7 @@ namespace CoreCRM.Areas.Api.Controllers
         // POST: /Account/Login
         [HttpPost]
         [AllowAnonymous]
+        [ValidateAntiForgeryToken]
         public async Task<JsonResult> Login([FromBody] LoginViewModel model)
         {
             if (ModelState.IsValid)
@@ -69,8 +70,6 @@ namespace CoreCRM.Areas.Api.Controllers
                     _logger.LogInformation(1, "User logged in.");
 
                     Response.Cookies.Append("remember-this-week", "T", new Microsoft.AspNetCore.Http.CookieOptions() {
-                        HttpOnly = true,
-                        Path = "/",
                         Expires = new DateTimeOffset(Utils.GetNextEndOfWeek())
                     });
 

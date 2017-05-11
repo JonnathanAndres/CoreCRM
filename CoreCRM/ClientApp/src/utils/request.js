@@ -28,7 +28,9 @@ export default function request(url, options) {
       body: JSON.stringify(options.data),
       headers: {
         'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': REQUEST_VERIFICATION_TOKEN, // eslint-disable-line no-undef
       },
+      credentials: 'same-origin',
       ...options,
     };
   }

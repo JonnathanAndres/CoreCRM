@@ -60,6 +60,7 @@ namespace CoreCRM
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
+            services.AddAntiforgery(options => options.HeaderName = "X-CSRF-TOKEN");
             services.AddMvc();
 
             // Add application services.
@@ -111,6 +112,12 @@ namespace CoreCRM
             app.UseIdentity();
 
             // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
+            app.Use(async (context, next) =>
+            {
+                // Do work that doesn't write to the Response.
+                await next.Invoke();
+                // Do logging or other work that doesn't write to the Response.
+            });
 
             app.UseMvc(routes =>
             {
@@ -118,14 +125,17 @@ namespace CoreCRM
                     template: "{area}/{controller}/{action}");
 
                 routes.MapRoute(
-                    name: "redirectRoute",
-                    template: "{controller}/{*path}",
-                    defaults: new { controler="Home", action="Index" });
+                    name: "default",
+                    template: "{controller}/{action=Index}");
 
                 routes.MapRoute(
-                    name: "default",
-                    template: "{controller}",
-                    defaults: new { controler = "Home", action = "Index" });
+                    name: "redirectRoute",
+                    template: "{controller}/{*path}",
+                    defaults: new { action="Index" });
+
+                routes.MapSpaFallbackRoute(
+                    name: "spa-fallback",
+                    defaults: new { controller = "Home", action = "Index" });
             });
 
             // Seed test data.

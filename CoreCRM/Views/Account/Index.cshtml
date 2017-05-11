@@ -3,12 +3,23 @@
 @using Microsoft.AspNetCore.Http.Authentication
 @model CoreCRM.ViewModels.AccountViewModels.LoginViewModel
 @inject SignInManager<ApplicationUser> SignInManager
-
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @{
-    ViewData["Title"] = "Log in";
+    ViewData["Title"] = "登录";
+    var ThisController = "Account";
+    var ReturnUrl = ViewData["ReturnUrl"];
+    var RequestVerificationToken = Xsrf.GetAndStoreTokens(Context).RequestToken;
 }
 
-<div id="root" asp-prerender-module="ClientApp/boot-server"></div>
+<div id="root"
+     asp-prerender-module="ClientApp/boot-server"
+     asp-prerender-data="new {
+                    Controller = ThisController,
+                    ReturnUrl = ReturnUrl,
+                    Cookies = ViewContext.HttpContext.Request.Cookies,
+                    RequestVerificationToken = RequestVerificationToken
+                 }"
+></div>
 
 @section Styles {
     <link rel="stylesheet" href="~/css/Account.css" asp-append-version="true" />

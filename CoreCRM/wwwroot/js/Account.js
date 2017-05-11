@@ -1859,16 +1859,10 @@ webpackJsonp([2],{
 	    // small => sm
 
 
-	    var sizeCls = '';
-	    switch (size) {
-	        case 'large':
-	            sizeCls = 'lg';
-	            break;
-	        case 'small':
-	            sizeCls = 'sm';
-	        default:
-	            break;
-	    }
+	    var sizeCls = {
+	        large: 'lg',
+	        small: 'sm'
+	    }[size] || '';
 	    var classes = (0, _classnames2["default"])(prefixCls, (0, _defineProperty3["default"])({}, prefixCls + '-' + sizeCls, sizeCls), className);
 	    return _react2["default"].createElement('div', (0, _extends3["default"])({}, others, { className: classes }));
 	}
@@ -1943,19 +1937,17 @@ webpackJsonp([2],{
 	    return typeof str === 'string';
 	}
 	// Insert one space between two chinese characters automatically.
-	function insertSpace(child, needInserted) {
+	function insertSpace(child) {
 	    // Check the child if is undefined or null.
 	    if (child == null) {
 	        return;
 	    }
-	    var SPACE = needInserted ? ' ' : '';
-	    // strictNullChecks oops.
-	    if (typeof child !== 'string' && typeof child !== 'number' && isString(child.type) && isTwoCNChar(child.props.children)) {
-	        return _react2["default"].cloneElement(child, {}, child.props.children.split('').join(SPACE));
+	    if (isString(child.type) && isTwoCNChar(child.props.children)) {
+	        return _react2["default"].cloneElement(child, {}, child.props.children.split('').join(' '));
 	    }
-	    if (typeof child === 'string') {
+	    if (isString(child)) {
 	        if (isTwoCNChar(child)) {
-	            child = child.split('').join(SPACE);
+	            child = child.split('').join(' ');
 	        }
 	        return _react2["default"].createElement(
 	            'span',
@@ -2006,7 +1998,7 @@ webpackJsonp([2],{
 	        if (currentLoading) {
 	            clearTimeout(this.delayTimeout);
 	        }
-	        if (typeof loading !== 'boolean' && loading && loading.delay) {
+	        if (loading && loading.delay) {
 	            this.delayTimeout = setTimeout(function () {
 	                return _this2.setState({ loading: loading });
 	            }, loading.delay);
@@ -2044,23 +2036,14 @@ webpackJsonp([2],{
 	        // large => lg
 	        // small => sm
 
-	        var sizeCls = '';
-	        switch (size) {
-	            case 'large':
-	                sizeCls = 'lg';
-	                break;
-	            case 'small':
-	                sizeCls = 'sm';
-	            default:
-	                break;
-	        }
+	        var sizeCls = {
+	            large: 'lg',
+	            small: 'sm'
+	        }[size] || '';
 	        var classes = (0, _classnames2["default"])(prefixCls, (_classNames = {}, (0, _defineProperty3["default"])(_classNames, prefixCls + '-' + type, type), (0, _defineProperty3["default"])(_classNames, prefixCls + '-' + shape, shape), (0, _defineProperty3["default"])(_classNames, prefixCls + '-' + sizeCls, sizeCls), (0, _defineProperty3["default"])(_classNames, prefixCls + '-icon-only', !children && icon), (0, _defineProperty3["default"])(_classNames, prefixCls + '-loading', loading), (0, _defineProperty3["default"])(_classNames, prefixCls + '-clicked', clicked), (0, _defineProperty3["default"])(_classNames, prefixCls + '-background-ghost', ghost), _classNames), className);
 	        var iconType = loading ? 'loading' : icon;
 	        var iconNode = iconType ? _react2["default"].createElement(_icon2["default"], { type: iconType }) : null;
-	        var needInserted = _react2["default"].Children.count(children) === 1 && !iconType;
-	        var kids = _react2["default"].Children.map(children, function (child) {
-	            return insertSpace(child, needInserted);
-	        });
+	        var kids = _react2["default"].Children.map(children, insertSpace);
 	        return _react2["default"].createElement(
 	            'button',
 	            (0, _extends3["default"])({}, (0, _omit2["default"])(others, ['loading', 'clicked']), { type: htmlType || 'button', className: classes, onMouseUp: this.handleMouseUp, onClick: this.handleClick }),
@@ -9729,13 +9712,12 @@ webpackJsonp([2],{
 	      while (1) {
 	        switch (_context.prev = _context.next) {
 	          case 0:
-	            console.log(payload);
 	            return _context.abrupt('return', (0, _request2.default)('/api/account/login', {
 	              method: 'post',
 	              data: payload
 	            }));
 
-	          case 2:
+	          case 1:
 	          case 'end':
 	            return _context.stop();
 	        }
@@ -9768,6 +9750,10 @@ webpackJsonp([2],{
 	var _stringify = __webpack_require__(195);
 
 	var _stringify2 = _interopRequireDefault(_stringify);
+
+	var _extends2 = __webpack_require__(2);
+
+	var _extends3 = _interopRequireDefault(_extends2);
 
 	var _typeof2 = __webpack_require__(29);
 
@@ -9803,13 +9789,19 @@ webpackJsonp([2],{
 	 * @return {object}           An object containing either "data" or "err"
 	 */
 	function request(url, options) {
+	  var fetchOptions = options;
 	  if ((0, _typeof3.default)(options.data) === 'object') {
-	    options.body = (0, _stringify2.default)(options.data);
-	    options.headers = options.headers || {};
-	    options.headers['Content-Type'] = 'application/json';
+	    fetchOptions = (0, _extends3.default)({
+	      body: (0, _stringify2.default)(options.data),
+	      headers: {
+	        'Content-Type': 'application/json',
+	        'X-CSRF-TOKEN': REQUEST_VERIFICATION_TOKEN
+	      },
+	      credentials: 'same-origin'
+	    }, options);
 	  }
 
-	  return (0, _fetch2.default)(url, options).then(checkStatus).then(parseJSON).then(function (data) {
+	  return (0, _fetch2.default)(url, fetchOptions).then(checkStatus).then(parseJSON).then(function (data) {
 	    return { data: data };
 	  }).catch(function (err) {
 	    return { err: err };
