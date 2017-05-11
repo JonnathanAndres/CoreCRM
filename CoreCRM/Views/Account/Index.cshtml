@@ -1,9 +1,9 @@
 ﻿@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
 @{
     ViewData["Title"] = "登录";
-    var ThisController = "Account";
-    var ReturnUrl = ViewData["ReturnUrl"];
-    var RequestVerificationToken = Xsrf.GetAndStoreTokens(Context).RequestToken;
+    string ThisController = ViewData["Controller"] as string;
+    string ReturnUrl = ViewData["ReturnUrl"] as string;
+    string RequestVerificationToken = Xsrf.GetAndStoreTokens(Context).RequestToken;
 }
 
 <div id="root"

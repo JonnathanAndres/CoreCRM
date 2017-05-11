@@ -10,6 +10,7 @@ using CoreCRM.Models;
 using CoreCRM.Services;
 using CoreCRM.Areas.Api.Constants;
 using CoreCRM.Areas.Api.ViewModels.AccountViewModels;
+using Microsoft.AspNetCore.Http;
 
 namespace CoreCRM.Areas.Api.Controllers
 {
@@ -69,10 +70,20 @@ namespace CoreCRM.Areas.Api.Controllers
                 {
                     _logger.LogInformation(1, "User logged in.");
 
-                    Response.Cookies.Append("remember-this-week", "T", new Microsoft.AspNetCore.Http.CookieOptions() {
-                        Expires = new DateTimeOffset(Utils.GetNextEndOfWeek())
-                    });
+                    if (model.RememberThisWeek)
+                    {
+                        // Modify the login token expire time to this week end.
+                        const string IDENTITY_TOKEN_NAME = ".AspNetCore.Identity.Application";
+                        string identifyToken = ExtractIdentityToken(IDENTITY_TOKEN_NAME);
 
+                        Response.Cookies.Append(IDENTITY_TOKEN_NAME, identifyToken, new CookieOptions()
+                        {
+                            HttpOnly = true,
+                            Path = "/",
+                            Expires = new DateTimeOffset(Utils.GetNextEndOfWeek())
+                        });
+                    }
+ 
                     return Json(new ResultModels.LoginResult()
                     {
                         Code = (int)ReturnCode.OK,
@@ -120,6 +131,22 @@ namespace CoreCRM.Areas.Api.Controllers
                     Errors = "[" + string.Join(",", extras) + "]"
                 });
             }
+        }
+
+        private string ExtractIdentityToken(string IDENTITY_TOKEN_NAME)
+        {
+            foreach (var header in Response.Headers.Values)
+            {
+                var headerValue = header.ToString();
+                if (headerValue.StartsWith(IDENTITY_TOKEN_NAME))
+                {
+                    var cookieSegments = headerValue.Split(new char[] { ';' });
+                    var indexOfEqual = cookieSegments[0].IndexOf('=');
+                    return cookieSegments[0].Substring(indexOfEqual + 1);
+                }
+            }
+
+            throw new Exception("Identity token not found.");
         }
 
         //

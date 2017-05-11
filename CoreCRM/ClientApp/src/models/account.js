@@ -11,11 +11,10 @@ export default {
     }, { call }) {
       const { data } = yield call(login, payload);
 
-      if (data.Code === 0) {
-        const window = window || {};
-        window.location = data.ReturnUrl;
+      if (data.code === 0) {
+        window.location = RETURN_URL || '/Home'; // eslint-disable-line no-undef
       } else {
-        throw data;
+        throw data.errors;
       }
     },
   },

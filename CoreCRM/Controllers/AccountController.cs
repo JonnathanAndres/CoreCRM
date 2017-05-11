@@ -1,20 +1,5 @@
-﻿using System;
-using System.Net;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using System.Collections.Generic;
+﻿using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Authorization;
-using CoreCRM.Models;
-using CoreCRM.Services;
-using CoreCRM.ViewModels.AccountViewModels;
-using CoreCRM.Models.AccountViewModels;
 
 namespace CoreCRM.Controllers
 {
@@ -38,6 +23,7 @@ namespace CoreCRM.Controllers
             }
             else
             {
+                ViewData["Controller"] = ControllerContext.ActionDescriptor.ControllerName;
                 ViewData["ReturnUrl"] = returnUrl;
                 return View();
             }

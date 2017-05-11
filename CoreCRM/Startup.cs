@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using CoreCRM.Data;
 using CoreCRM.Models;
 using CoreCRM.Services;
 using CoreCRM.Repositories;
-using Microsoft.AspNetCore.Identity;
 
 namespace CoreCRM
 {
@@ -74,7 +70,6 @@ namespace CoreCRM
         {
             services.AddDbContext<ApplicationDbContext>(options => {
                 //options.UseMySQL(Configuration.GetConnectionString("MySQLConnection"));
-                //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
                 options.UseInMemoryDatabase();
             });
         }
@@ -112,12 +107,6 @@ namespace CoreCRM
             app.UseIdentity();
 
             // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
-            app.Use(async (context, next) =>
-            {
-                // Do work that doesn't write to the Response.
-                await next.Invoke();
-                // Do logging or other work that doesn't write to the Response.
-            });
 
             app.UseMvc(routes =>
             {

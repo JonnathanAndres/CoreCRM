@@ -9,7 +9,7 @@ cssModulesRequireHook({
 
 module.exports = createServerRenderer((params) => {
   return new Promise((resolve) => {
-    const BootServer = require(`./dist/server/${params.data.controller}.js`); // eslint-disable-line
+    const BootServer = require(`./dist/server/${params.data.controller}`); // eslint-disable-line
 
     let clientPath = '/';
     params.data.cookies.forEach((cookie) => {
@@ -31,6 +31,7 @@ module.exports = createServerRenderer((params) => {
         globals: {
           INITIAL_STATE: initialState,
           REQUEST_VERIFICATION_TOKEN: params.data.requestVerificationToken,
+          RETURN_URL: params.data.returnUrl,
         },
       });
     });

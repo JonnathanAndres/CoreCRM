@@ -17,9 +17,16 @@
   <PropertyGroup>
     <UserSecretsId>aspnet-CoreCRM-d19245e9-51ac-451a-92c4-40c9deb1f125</UserSecretsId>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="ViewComponents\**" />
+    <Content Remove="ViewComponents\**" />
+    <EmbeddedResource Remove="ViewComponents\**" />
+    <None Remove="ViewComponents\**" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore" Version="1.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="1.1.1" />
@@ -43,7 +50,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Repositories\" />
-    <Folder Include="ViewComponents\" />
     <Folder Include="ViewModels\" />
   </ItemGroup>
 
