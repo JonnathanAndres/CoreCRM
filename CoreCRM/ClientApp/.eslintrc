@@ -29,10 +29,4 @@
       "experimentalObjectRestSpread": true
     }
   },
-  "eslintConfig": {
-    "globals": {
-      "window": true,
-      "document": true
-    }
-  }
 }

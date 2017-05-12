@@ -1,3 +1,4 @@
+/* global REQUEST_VERIFICATION_TOKEN */
 import fetch from 'dva/fetch';
 
 function parseJSON(response) {
@@ -28,7 +29,7 @@ export default function request(url, options) {
       body: JSON.stringify(options.data),
       headers: {
         'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': REQUEST_VERIFICATION_TOKEN, // eslint-disable-line no-undef
+        'X-CSRF-TOKEN': REQUEST_VERIFICATION_TOKEN,
       },
       credentials: 'same-origin',
       ...options,

@@ -12,7 +12,7 @@ const app = dva({
 app.use(createLoading());
 
 // 3. Model
-app.model(require('../models/navigationBar'));
+app.model(require('../models/app'));
 app.model(require('../models/account'));
 
 // 4. Router

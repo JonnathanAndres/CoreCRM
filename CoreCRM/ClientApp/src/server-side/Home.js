@@ -1,12 +1,12 @@
 import React from 'react';
-import { renderToString } from 'react-dom/server';
-
 import dva from 'dva';
-import { RouterContext, createMemoryHistory } from 'dva/router';
+import createLoading from 'dva-loading';
+import { renderToString } from 'react-dom/server';
+import { Route, RouterContext, createMemoryHistory } from 'dva/router';
+import { routes } from '../views/Home/router';
+import '../views/Shared/Shared.css';
 
-import { routes as _routes } from '../views/Home/router';
-
-export function renderHTML(initialState, renderProps) {
+export function renderHTML(initialState, serverRenderProps) {
   // 1. Initialize
   const app = dva({
     history: createMemoryHistory(),
@@ -14,17 +14,17 @@ export function renderHTML(initialState, renderProps) {
   });
 
   // 2. Plugins
-  // app.use({});
+  app.use(createLoading());
 
   // 3. Model
-  app.model(require('../models/navigationBar')); // eslint-disable-line
+  // app.model(require('../models/home')); // eslint-disable-line
 
   // 4. Router
-  app.router(({ routerRenderProps }) => {
-    return <RouterContext {...routerRenderProps} />;
+  app.router(({ renderProps }) => {
+    return <RouterContext {...renderProps} />;
   });
 
-  return renderToString(app.start()({ routerRenderProps: renderProps }));
+  return renderToString(app.start()({ renderProps: serverRenderProps }));
 }
 
-export const routes = _routes;
+export const serverSideRoutes = <Route path="/">{routes}</Route>;

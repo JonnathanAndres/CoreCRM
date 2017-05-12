@@ -1,9 +1,8 @@
 import React from 'react';
 import dva from 'dva';
 import createLoading from 'dva-loading';
-import { RouterContext, createMemoryHistory } from 'dva/router';
+import { Route, RouterContext, createMemoryHistory } from 'dva/router';
 import { renderToString } from 'react-dom/server';
-
 import { routes } from '../views/Account/router';
 import '../views/Shared/Shared.css';
 
@@ -28,4 +27,4 @@ export function renderHTML(initialState, serverRenderProps) {
   return renderToString(app.start()({ renderProps: serverRenderProps }));
 }
 
-export const serverSideRoutes = routes;
+export const serverSideRoutes = <Route path="/">{routes}</Route>;

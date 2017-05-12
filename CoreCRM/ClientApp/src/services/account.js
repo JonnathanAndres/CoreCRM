@@ -6,3 +6,9 @@ export async function login(payload) {
     data: payload,
   });
 }
+
+export async function logout() {
+  return request('/api/account/logout', {
+    method: 'post',
+  });
+}

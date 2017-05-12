@@ -8,7 +8,7 @@ webpack({
   context: path.join(__dirname, '../src'),
   target: 'node',
   entry: {
-    'dummy': './dummy.js',
+    theme: './theme.js',
   },
   output: {
     path: path.join(__dirname, '../dist'),
