@@ -1,6 +1,6 @@
 /* eslint-env browser */
 import { logout } from '../services/account';
-import { prefix } from '../config';
+import { prefix } from '../utils/config';
 
 export default {
   namespace: 'app',
@@ -8,6 +8,7 @@ export default {
     user: {},
     menuPopoverVisible: false,
     siderFold: localStorage.getItem(`${prefix}siderFold`) === 'true',
+    isNavbar: typeof document === 'object' ? document.body.clientWidth < 769 : false,
     navOpenKeys: JSON.parse(localStorage.getItem(`${prefix}navOpenKeys`)) || [],
   },
   subscriptions: {

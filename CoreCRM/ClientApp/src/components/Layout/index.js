@@ -89,6 +89,7 @@ Layout.propTypes = {
   children: PropTypes.element.isRequired,
   // location: PropTypes.object,
   // dispatch: PropTypes.func,
+  // isNavBar: PropTypes.bool,
   app: PropTypes.object,
   // loading: PropTypes.object,
 };
