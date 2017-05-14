@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { Icon, Switch } from 'antd';
 import { config } from '../../utils';
 import Menus from './Menu';
-import styles from './Sider.less';
+// TODO: Why the import in less not work?
+import styles from '../../views/Layout/Layout.less';
 
 const Sider = ({ siderFold,
                  darkTheme,
