@@ -1,8 +1,10 @@
 import React from 'react';
 import { Router, Route, IndexRedirect } from 'dva/router';
-import Layout from '../../components/Layout';
+import Layout from '../Layout';
 import Structure from './Structure';
 import Employee from './Employee';
+import { routesToMenus } from '../../utils';
+import menuMetadata from './menu';
 
 export const routes = (
   <Route component={Layout}>
@@ -11,6 +13,8 @@ export const routes = (
     <Route path="employee" component={Employee} />
   </Route>
 );
+
+export const menus = routesToMenus(routes, menuMetadata);
 
 export function RouterConfig({ history }) {
   return (

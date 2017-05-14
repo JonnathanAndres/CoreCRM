@@ -1,39 +1,60 @@
 /* eslint-env browser */
 import { logout } from '../services/account';
-import { prefix } from '../utils/config';
+import localStorageKeys from '../utils/localStorageKeys';
+
+const modelInitialState = {
+  user: {},
+  menuPopoverVisible: false,
+  siderFold: false,
+  isNavbar: false,
+  isDev: false,
+  navOpenKeys: [],
+  mainMenus: [],
+  sideMenus: {},
+  breads: [],
+};
 
 export default {
   namespace: 'app',
-  state: {
-    user: {},
-    menuPopoverVisible: false,
-    siderFold: localStorage.getItem(`${prefix}siderFold`) === 'true',
-    isNavbar: typeof document === 'object' ? document.body.clientWidth < 769 : false,
-    navOpenKeys: JSON.parse(localStorage.getItem(`${prefix}navOpenKeys`)) || [],
-  },
+  state: modelInitialState,
   subscriptions: {
-    setup(/* { dispatch } */) {
-      // dispatch({ type: 'query' });
+    setup({ dispatch }) {
+      dispatch({ type: 'init', payload: modelInitialState });
     },
   },
   effects: {
     *logout({
       payload,
-    }, { call, put }) {
+    }, { call }) {
       const data = yield call(logout);
       if (data.success) {
-        yield put({ type: 'query' });
+        // Redirect to login.
+        window.location = '/Account/Login';
       } else {
+        // TODO: show a message here.
+        // It should not be here often.
         throw (data);
       }
     },
   },
   reducers: {
+    init(state, { payload }) {
+      return {
+        ...payload,
+        ...state,
+      };
+    },
     switchSider(state) {
-      localStorage.setItem(`${prefix}siderFold`, !state.siderFold);
+      localStorage.setItem(localStorageKeys.siderFold, !state.siderFold);
       return {
         ...state,
         siderFold: !state.siderFold,
+      };
+    },
+    updateSideMenus(state, { sideMenus }) {
+      return {
+        ...state,
+        sideMenus,
       };
     },
   },

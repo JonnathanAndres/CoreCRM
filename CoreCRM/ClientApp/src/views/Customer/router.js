@@ -1,6 +1,6 @@
 import React from 'react';
 import { Router, Route, IndexRoute } from 'dva/router';
-import Layout from '../../components/Layout';
+import Layout from '../Layout';
 import Index from './Index';
 import Add from './Add';
 import Edit from './Edit';
@@ -20,6 +20,9 @@ import PotentialEdit from './Potential/Edit';
 import PotentialView from './Potential/View';
 import PotentialPool from './Potential/Pool';
 import PotentialStatistics from './Potential/Statistics';
+
+import { routesToMenus } from '../../utils';
+import menuMetadata from './menu';
 
 export const routes = (
   <Route component={Layout}>
@@ -46,6 +49,8 @@ export const routes = (
     </Route>
   </Route>
 );
+
+export const menus = routesToMenus(routes, menuMetadata);
 
 export function RouterConfig({ history }) {
   return (

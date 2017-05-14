@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Menu, Icon } from 'antd';
 import { Link } from 'dva/router';
-import pathToRegexp from 'path-to-regexp';
-import { arrayToTree, queryArray } from '../../utils';
 
 const Menus = ({ siderFold,
                  darkTheme,
@@ -12,109 +10,57 @@ const Menus = ({ siderFold,
                  navOpenKeys,
                  changeOpenKeys,
                  menu }) => {
-  // 生成树状
-  const menuTree = arrayToTree(menu.filter(_ => _.mpid !== -1), 'id', 'mpid');
-  const levelMap = {};
-
-  // 递归生成菜单
-  const getMenus = (menuTreeN, siderFoldN) => {
-    return menuTreeN.map((item) => {
+  const selectedKeys = [];
+  const getMenus = (menuTree) => {
+    function recursive(item, parentRoute) {
       if (item.children) {
-        if (item.mpid) {
-          levelMap[item.id] = item.mpid;
-        }
         return (
           <Menu.SubMenu
             key={item.id}
             title={<span>
               {item.icon && <Icon type={item.icon} />}
-              {(!siderFoldN || menuTree.indexOf(item) < 0) && item.name}
+              {item.name}
             </span>}
           >
-            {getMenus(item.children, siderFoldN)}
+            {item.children.map(child => recursive(child, item.route))}
           </Menu.SubMenu>
         );
-      }
-      return (
-        <Menu.Item key={item.id}>
-          <Link to={item.router}>
-            {item.icon && <Icon type={item.icon} />}
-            {(!siderFoldN || menuTree.indexOf(item) < 0) && item.name}
-          </Link>
-        </Menu.Item>
-      );
-    });
-  };
-  const menuItems = getMenus(menuTree, siderFold);
+      } else {
+        const re = new RegExp(`^${location.pathname}`);
+        if (re.test(item.route)) {
+          selectedKeys.push(JSON.stringify(item.id));
+        }
 
-  // 保持选中
-  const getAncestorKeys = (key) => {
-    const map = {};
-    const getParent = (index) => {
-      const result = [String(levelMap[index])];
-      if (levelMap[result[0]]) {
-        result.unshift(getParent(result[0])[0]);
-      }
-      return result;
-    };
-    for (const index in levelMap) {
-      if ({}.hasOwnProperty.call(levelMap, index)) {
-        map[index] = getParent(index);
+        return (
+          <Menu.Item
+            key={item.id}
+          >
+            <Link to={parentRoute ? parentRoute + item.route : item.route}>
+              {item.icon && <Icon type={item.icon} />}
+              {item.name}
+            </Link>
+          </Menu.Item>
+        );
       }
     }
-    return map[key] || [];
+    return recursive(menuTree);
   };
 
-  const onOpenChange = (openKeys) => {
-    const latestOpenKey = openKeys.find(key => !(navOpenKeys.indexOf(key) > -1));
-    const latestCloseKey = navOpenKeys.find(key => !(openKeys.indexOf(key) > -1));
-    let nextOpenKeys = [];
-    if (latestOpenKey) {
-      nextOpenKeys = getAncestorKeys(latestOpenKey).concat(latestOpenKey);
-    }
-    if (latestCloseKey) {
-      nextOpenKeys = getAncestorKeys(latestCloseKey);
-    }
-    changeOpenKeys(nextOpenKeys);
-  };
+  const menuItems = getMenus(menu);
 
-  const menuProps = !siderFold ? {
-    onOpenChange,
+  const menuProps = Object.assign({
+    selectedKeys,
+    mode: (siderFold ? 'vertical' : 'inline'),
+    theme: (darkTheme ? 'dark' : 'light'),
+  }, siderFold ? {} : {
     openKeys: navOpenKeys,
-  } : {};
-
-
-  // 寻找选中路由
-  let currentMenu;
-  let defaultSelectedKeys;
-  for (const item of menu) {
-    if (item.router && pathToRegexp(item.router).exec(location.pathname)) {
-      currentMenu = item;
-      break;
-    }
-  }
-  const getPathArray = (array, current, pid, id) => {
-    const result = [String(current[id])];
-    const getPath = (item) => {
-      if (item && item[pid]) {
-        result.unshift(String(item[pid]));
-        getPath(queryArray(array, item[pid], id));
-      }
-    };
-    getPath(current);
-    return result;
-  };
-  if (currentMenu) {
-    defaultSelectedKeys = getPathArray(menu, currentMenu, 'mpid', 'id');
-  }
+    onOpenChange: changeOpenKeys,
+  });
 
   return (
     <Menu
       {...menuProps}
-      mode={siderFold ? 'vertical' : 'inline'}
-      theme={darkTheme ? 'dark' : 'light'}
       onClick={handleClickNavMenu}
-      defaultSelectedKeys={defaultSelectedKeys}
     >
       {menuItems}
     </Menu>
@@ -122,7 +68,7 @@ const Menus = ({ siderFold,
 };
 
 Menus.propTypes = {
-  menu: PropTypes.array,
+  menu: PropTypes.object,
   siderFold: PropTypes.bool,
   darkTheme: PropTypes.bool,
   location: PropTypes.object,

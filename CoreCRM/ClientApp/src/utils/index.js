@@ -1,6 +1,4 @@
 /* eslint-env browser */
-import lodash from 'lodash';
-import classnames from 'classnames';
 import config from './config';
 import request from './request';
 import { color } from './theme';
@@ -42,70 +40,40 @@ Date.prototype.format = function formatDate(format) { // eslint-disable-line no-
   return formatted;
 };
 
-
 /**
- * @param   {String}
- * @return  {String}
+ * 把 routes 的定义转换成 menu tree
+ * @param   {object} routes routes 的定义
+ * @param   {object} metadata menu 的元信息
+ * @return  {object}
  */
-const queryURL = (name) => {
-  const re = new RegExp(`(^|&)${name}=([^&]*)(&|$)`, 'i');
-  const r = window.location.search.substr(1).match(re);
-  if (r != null) return decodeURI(r[2]);
-  return null;
-};
-
-/**
- * 数组内查询
- * @param   {array}      array
- * @param   {String}    id
- * @param   {String}    keyAlias
- * @return  {Array}
- */
-const queryArray = (array, key, keyAlias = 'key') => {
-  if (!(array instanceof Array)) {
-    return null;
-  }
-  const item = array.filter(_ => _[keyAlias] === key);
-  if (item.length) {
-    return item[0];
-  }
-  return null;
-};
-
-/**
- * 数组格式转树状结构
- * @param   {array}     array
- * @param   {String}    id
- * @param   {String}    pid
- * @param   {String}    children
- * @return  {Array}
- */
-const arrayToTree = (array, id = 'id', pid = 'pid', children = 'children') => {
-  const hash = {};
-  const data = lodash.cloneDeep(array);
-  const result = [];
-  data.forEach((item, index) => {
-    hash[data[index][id]] = data[index];
-  });
-
-  data.forEach((item) => {
-    const hashVP = hash[item[pid]];
-    if (hashVP) {
-      if (hashVP[children]) (hashVP[children] = []);
-      hashVP[children].push(item);
+const routesToMenus = (routes, metadata) => {
+  function recursive(parent, children) {
+    if (children instanceof Array) {
+      children.forEach((child, index) => {
+        const isRoute = child.type.displayName === 'Route';
+        const hasPath = child.props.path !== undefined;
+        if (isRoute && hasPath) {
+          const route = `${parent.route}${parent.route.endsWith('/') ? '' : '/'}${child.props.path}`;
+          let menu = { id: (parent.id * 100) + index, route, ...metadata[route] };
+          if (child.props.children !== undefined) {
+            menu.children = [];
+            menu = recursive(menu, child.props.children);
+          }
+          parent.children.push(menu);
+        }
+      });
     } else {
-      result.push(item);
+      delete parent.children; // eslint-disable-line no-param-reassign
     }
-  });
-  return result;
+    return parent;
+  }
+  const root = { route: '/', id: 1, children: [], ...metadata['/'] };
+  return recursive(root, routes.props.children);
 };
 
 module.exports = {
   config,
   request,
   color,
-  classnames,
-  queryURL,
-  queryArray,
-  arrayToTree,
+  routesToMenus,
 };

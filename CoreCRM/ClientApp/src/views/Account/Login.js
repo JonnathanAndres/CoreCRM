@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'dva';
 import { Form, Input, Checkbox, Button, Icon } from 'antd';
+import { logo } from '../../utils';
 import styles from './Login.less';
 
 const Login = (props) => {
@@ -20,7 +21,7 @@ const Login = (props) => {
   return (
     <div className={styles.form}>
       <div className={styles.logo}>
-        <img alt={'logo'} src="https://t.alipayobjects.com/images/T1QUBfXo4fXXXXXXXX.png" />
+        <img alt={'logo'} src={logo} />
         <span>CoreCRM</span>
       </div>
       <Form onSubmit={handleOk}>
