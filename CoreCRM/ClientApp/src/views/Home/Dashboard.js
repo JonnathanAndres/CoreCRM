@@ -2,13 +2,13 @@ import React from 'react';
 import { connect } from 'dva';
 // import styles from './Index.css';
 
-function Index() {
+function Dashboard() {
   return (
     <div>Home/Index</div>
   );
 }
 
-Index.propTypes = {
+Dashboard.propTypes = {
 };
 
-export default connect()(Index);
+export default connect()(Dashboard);

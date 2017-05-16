@@ -1,13 +1,16 @@
 import React from 'react';
-import { Router, Route, IndexRoute } from 'dva/router';
+import { Router, Route, IndexRedirect } from 'dva/router';
 import Layout from '../Layout';
 import { routesToMenus } from '../../utils';
-import Index from './Index';
+import WorkBench from './WorkBench';
+import Dashboard from './Dashboard';
 import menuMetadata from './menu';
 
 export const routes = (
   <Route component={Layout}>
-    <IndexRoute component={Index} />
+    <IndexRedirect to="workbench" />
+    <Route path="workbench" component={WorkBench} />
+    <Route path="dashboard" component={Dashboard} />
   </Route>
 );
 
