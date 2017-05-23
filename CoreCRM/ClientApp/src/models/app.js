@@ -4,14 +4,12 @@ import localStorageKeys from '../utils/localStorageKeys';
 
 const modelInitialState = {
   user: {},
-  menuPopoverVisible: false,
-  siderFold: false,
-  isNavbar: false,
+  siderCollapsed: false,
   isDev: false,
-  navOpenKeys: [],
   mainMenus: [],
   sideMenus: {},
   breads: [],
+  selectedMainMenuKeys: [],
 };
 
 export default {
@@ -39,16 +37,27 @@ export default {
   },
   reducers: {
     init(state, { payload }) {
+      // TODO: init with INITIAL_STATE
+      const selectedMainMenuKeys = state.mainMenus
+                                        .map(menu => (menu.selected ? `main-menu-${menu.name}` : false))
+                                        .filter(menu => menu !== false);
       return {
         ...payload,
         ...state,
+        selectedMainMenuKeys,
       };
     },
-    switchSider(state) {
-      localStorage.setItem(localStorageKeys.siderFold, !state.siderFold);
+    toggleSider(state) {
+      localStorage.setItem(localStorageKeys.siderCollapsed, !state.siderCollapsed);
       return {
         ...state,
-        siderFold: !state.siderFold,
+        siderCollapsed: !state.siderCollapsed,
+      };
+    },
+    changeMainMenu(state, { key }) {
+      return {
+        ...state,
+        selectedMainMenuKeys: [key],
       };
     },
     updateSideMenus(state, { sideMenus }) {

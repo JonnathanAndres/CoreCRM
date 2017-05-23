@@ -24,5 +24,8 @@ export default {
     } : {}), (BUILD_TYPE === 'server' ? {
       externals: [nodeExternals()]
     } : {}))
+  },
+  theme: {
+    "primary-color": "#1DA57A",
   }
 };

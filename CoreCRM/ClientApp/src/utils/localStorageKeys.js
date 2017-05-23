@@ -1,4 +1,4 @@
 export default {
-  siderFold: 'CoreCRM/siderFold',
+  siderCollapsed: 'CoreCRM/siderCollapsed',
   navOpenKeys: 'CoreCRM/navOpenKeys',
 };

@@ -14,7 +14,7 @@ const app = dva({
       ...initState.app,
       isDev: true,
       mainMenus: [
-        { name: 'Home', icon: 'home', route: '/Home' },
+        { name: 'Home', icon: 'home', route: '/Home', selected: true },
         { name: 'User', icon: 'user', route: '/User' },
       ],
       breads: [

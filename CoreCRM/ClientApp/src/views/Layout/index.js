@@ -1,95 +1,142 @@
 /* eslint-env browser */
 import React from 'react';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
 import { connect } from 'dva';
-import { Header, Sider, Bread, Footer } from '../../components/Layout';
+import { Link } from 'dva/router';
+import { Badge, Menu, Icon, Layout as AntdLayout } from 'antd';
 import styles from './Layout.less';
+import { config } from '../../utils';
 import '../../themes/index.less';
 
-const Layout = ({ children, location, dispatch, app }) => {
-  const {
-    user,
-    menuPopoverVisible,
-    siderFold,
-    darkTheme,
-    isNavbar,
-    isDev,
-    mainMenus,
-    sideMenus,
-    navOpenKeys,
-    breads } = app;
+const { Header, Content, Footer, Sider } = AntdLayout;
 
-  const headerProps = {
-    mainMenus,
-    user,
-    siderFold,
-    location,
-    isNavbar,
-    isDev,
-    menuPopoverVisible,
-    navOpenKeys,
-    switchMenuPopover() {
-      dispatch({ type: 'app/switchMenuPopver' });
-    },
-    logout() {
-      dispatch({ type: 'app/logout' });
-    },
-    switchSider() {
-      dispatch({ type: 'app/switchSider' });
-    },
-    changeOpenKeys(openKeys) {
-      dispatch({ type: 'app/handleNavOpenKeys', payload: { navOpenKeys: openKeys } });
-    },
+
+const Layout = ({ children, dispatch, app }) => {
+  const { siderCollapsed, user, isDev } = app;
+  const toggle = () => {
+    dispatch({ type: 'app/toggleSider' });
   };
 
-  const siderProps = {
-    sideMenus,
-    siderFold,
-    darkTheme,
-    location,
-    navOpenKeys,
-    changeTheme() {
-      dispatch({ type: 'app/switchTheme' });
-    },
-    changeOpenKeys(openKeys) {
-      dispatch({ type: 'app/handleNavOpenKeys', payload: { navOpenKeys: openKeys } });
-    },
+  const mainMenus = app.mainMenus.map((menu) => {
+    return (
+      <Menu.Item key={`main-menu-${menu.name}`}>
+        {isDev ?
+          <Link to={menu.route}>{menu.icon && <Icon type={menu.icon} />} {menu.name}</Link> :
+          <a href={menu.route}>{menu.icon && <Icon type={menu.icon} />} {menu.name}</a>}
+      </Menu.Item>
+    );
+  });
+  const handleMainMenuClick = (e) => {
+    dispatch({ type: 'app/changeMainMenu', key: e.key });
   };
 
-  const breadProps = {
-    breads,
-  };
+  const { sideMenus, selectedKeys: selectedSideMenuKeys } = ((menuTree) => {
+    const selectedKeys = [];
+    function recursive(item, parentRoute) {
+      if (item.children) {
+        return (
+          <Menu.SubMenu
+            key={item.id}
+            title={<span>
+              {item.icon && <Icon type={item.icon} />}
+              {item.name}
+            </span>}
+          >
+            {item.children.map(child => recursive(child, item.route))}
+          </Menu.SubMenu>
+        );
+      } else {
+        const re = new RegExp(`^${location.pathname}`);
+        if (re.test(item.route)) {
+          selectedKeys.push(JSON.stringify(item.id));
+        }
 
-  // Define classes
-  const asideClass = classnames(styles.sider, { [styles.light]: !darkTheme });
-  const layoutClass = classnames(styles.layout,
-    { [styles.fold]: !isNavbar && siderFold,
-      [styles.withnavbar]: isNavbar });
+        return (
+          <Menu.Item
+            key={item.id}
+          >
+            <Link to={parentRoute ? parentRoute + item.route : item.route}>
+              {item.icon && <Icon type={item.icon} />}
+              {item.name}
+            </Link>
+          </Menu.Item>
+        );
+      }
+    }
+    return { sideMenus: recursive(menuTree), selectedKeys };
+  })(app.sideMenus);
 
-  return (
-    <div className={layoutClass}>
-      {!isNavbar ?
-        <aside className={asideClass}>
-          <Sider {...siderProps} />
-        </aside> : ''}
-      <div className={styles.main}>
-        <Header {...headerProps} />
-        <Bread {...breadProps} location={location} />
-        <div className={styles.container}>
-          <div className={styles.content}>
-            {children}
-          </div>
-        </div>
-        <Footer />
+  return (<AntdLayout>
+    {/* TODO: show different sider in responsive */}
+    <Sider
+      breakpoint="lg"
+      collapsible
+      defaultCollapsed={siderCollapsed}
+      collapsed={siderCollapsed}
+      trigger={null}
+      className="light"
+    >
+      <div className={styles.logo}>
+        <img alt={'logo'} src={config.logo} />
+        <span>{config.name}</span>
       </div>
-    </div>
-  );
+      <Menu
+        theme="light"
+        mode="inline"
+        defaultSelectedKeys={selectedSideMenuKeys}
+        defaultOpenKeys={['1']}
+      >
+        {sideMenus}
+      </Menu>
+    </Sider>
+    <AntdLayout>
+      <Header className="light">
+        <div className={styles.button} onClick={toggle}>
+          <Icon type={siderCollapsed ? 'menu-unfold' : 'menu-fold'} />
+        </div>
+        <div style={{ display: 'inline-block' }}>
+          <Menu
+            onClick={handleMainMenuClick}
+            selectedKeys={app.selectedMainMenuKeys}
+            mode="horizontal"
+          >
+            {mainMenus}
+          </Menu>
+        </div>
+        <div className={styles.rightWarpper}>
+          <div className={styles.button}>
+            <Badge count={5}>
+              <Icon type="mail" />
+            </Badge>
+          </div>
+          <div className={styles.button}>
+            <Icon type="mail" />
+          </div>
+          <Menu mode="horizontal">
+            <Menu.SubMenu
+              style={{
+                float: 'right',
+              }}
+              title={<span><Icon type="user" />{user.username || 'guest'}</span>}
+            >
+              <Menu.Item key="settings">设置</Menu.Item>
+              <Menu.Item key="logout">退出</Menu.Item>
+            </Menu.SubMenu>
+          </Menu>
+        </div>
+      </Header>
+      <Content style={{ margin: '24px 16px 0' }}>
+        {children}
+      </Content>
+      <Footer style={{ textAlign: 'center' }}>
+        CoreCRM  &copyright; 2017
+      </Footer>
+    </AntdLayout>
+  </AntdLayout>);
 };
 
 Layout.propTypes = {
   children: PropTypes.element.isRequired,
-  location: PropTypes.object,
   dispatch: PropTypes.func,
   app: PropTypes.object,
   // loading: PropTypes.object,
