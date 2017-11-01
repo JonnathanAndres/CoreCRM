@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreCRM.WebApplication", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreCRM.Frontend", "src\CoreCRM.Frontend\CoreCRM.Frontend.csproj", "{B1023E96-A4AE-47BB-98A4-9E51DB9BBA97}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreCRM.Extensions.IdentityServer4", "src\CoreCRM.Extensions.IdentityServer4\CoreCRM.Extensions.IdentityServer4.csproj", "{5D346303-7E80-4DB1-A96F-FAF87378B9E7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +42,10 @@ Global
 		{B1023E96-A4AE-47BB-98A4-9E51DB9BBA97}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1023E96-A4AE-47BB-98A4-9E51DB9BBA97}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1023E96-A4AE-47BB-98A4-9E51DB9BBA97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D346303-7E80-4DB1-A96F-FAF87378B9E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D346303-7E80-4DB1-A96F-FAF87378B9E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D346303-7E80-4DB1-A96F-FAF87378B9E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D346303-7E80-4DB1-A96F-FAF87378B9E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
