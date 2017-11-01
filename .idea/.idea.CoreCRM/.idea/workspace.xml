@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8aa875a5-4a16-46fe-8b37-e0e7ad8461f9" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CoreCRM.sln" afterPath="$PROJECT_DIR$/CoreCRM.sln" />
-    </list>
+    <list default="true" id="8aa875a5-4a16-46fe-8b37-e0e7ad8461f9" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -62,11 +60,6 @@
             <path>
               <item name="" type="13324e5d:SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
               <item name="CoreCRM (3 projects)" type="977d5f41:SolutionExplorerNodeRider" />
-            </path>
-            <path>
-              <item name="" type="13324e5d:SolutionExplorerViewPane$ProjectViewPaneTreeStructure$createRoot$1" />
-              <item name="CoreCRM (3 projects)" type="977d5f41:SolutionExplorerNodeRider" />
-              <item name="CoreCRM.Extensions.IdentityServer4" type="977d5f41:SolutionExplorerNodeRider" />
             </path>
           </expand>
           <select />
@@ -179,12 +172,12 @@
       <workItem from="1509509652265" duration="242000" />
       <workItem from="1509510181587" duration="185000" />
       <workItem from="1509510628203" duration="2017000" />
-      <workItem from="1509519321946" duration="303000" />
+      <workItem from="1509519321946" duration="380000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="3864000" />
+    <option name="totallyTimeSpent" value="3941000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">

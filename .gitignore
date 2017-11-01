@@ -236,3 +236,6 @@ _Pvt_Extensions
 .fake/
 
 .DS_Store
+
+# Rider workspace
+.idea/.idea.CoreCRM/.idea/workspace.xml
