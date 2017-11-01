@@ -11,6 +11,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CoreCRM.Extensions.IdentityServer4\CoreCRM.Extensions.IdentityServer4.csproj" />
-    <ProjectReference Include="..\CoreCRM.Frontend\CoreCRM.Frontend.csproj" />
   </ItemGroup>
 </Project>
