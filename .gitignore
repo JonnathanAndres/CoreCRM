@@ -238,4 +238,5 @@ _Pvt_Extensions
 .DS_Store
 
 # Rider workspace
+.idea/.idea.CoreCRM/.idea/contentModel.xml
 .idea/.idea.CoreCRM/.idea/workspace.xml
