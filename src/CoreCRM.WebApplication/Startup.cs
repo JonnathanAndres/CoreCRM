@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ExtCore.WebApplication.Extensions;
@@ -27,8 +28,7 @@ namespace CoreCRM.WebApplication
 
             IConfigurationRoot configurationRoot = builder.Build();
 
-            // TODO Replace path seperator
-            this.extensionsPath = env.ContentRootPath + configurationRoot["Extensions:Path"];
+            extensionsPath = env.ContentRootPath + configurationRoot["Extensions:Path"].Replace('\\', Path.PathSeparator);
         }
         
         // This method gets called by the runtime. Use this method to add services to the container.
