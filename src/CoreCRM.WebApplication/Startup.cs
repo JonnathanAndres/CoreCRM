@@ -28,7 +28,9 @@ namespace CoreCRM.WebApplication
 
             IConfigurationRoot configurationRoot = builder.Build();
 
-            extensionsPath = env.ContentRootPath + configurationRoot["Extensions:Path"].Replace('\\', Path.PathSeparator);
+            var pathSeparatorIndependentPath = configurationRoot["Extensions:Path"].Replace('\\', Path.PathSeparator)
+                                                                                   .Replace('/', Path.PathSeparator);
+            extensionsPath = env.ContentRootPath + pathSeparatorIndependentPath;
         }
         
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -41,12 +43,16 @@ namespace CoreCRM.WebApplication
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseStaticFiles();
- 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+            }
+
+            app.UseStaticFiles();
  
             app.UseExtCore();
         }
