@@ -11,6 +11,8 @@
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CoreCRM.Extensions.Abstractions\CoreCRM.Extensions.Abstractions.csproj" />
+    <ProjectReference Include="..\CoreCRM.Extensions.ExampleAPI\CoreCRM.Extensions.ExampleAPI.csproj" />
     <ProjectReference Include="..\CoreCRM.Extensions.IdentityServer4\CoreCRM.Extensions.IdentityServer4.csproj" />
   </ItemGroup>
 </Project>

@@ -10,6 +10,7 @@ namespace CoreCRM.Extensions.IdentityServer4.Actions
         public void Execute(IApplicationBuilder applicationBuilder, IServiceProvider serviceProvider)
         {
             applicationBuilder.UseIdentityServer();
+            applicationBuilder.UseAuthentication();
         }
 
         public int Priority => 1000;
