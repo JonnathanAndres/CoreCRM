@@ -15,24 +15,19 @@ namespace CoreCRM.WebApplication
 {
     public class Startup
     {
-        private string extensionsPath;
+        private readonly string extensionsPath;
         
-        public Startup(IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public Startup(IHostingEnvironment env, IConfiguration configuration)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
-
-            builder.AddEnvironmentVariables();
-
-            IConfigurationRoot configurationRoot = builder.Build();
-
-            var pathSeparatorIndependentPath = configurationRoot["Extensions:Path"].Replace('\\', Path.PathSeparator)
-                                                                                   .Replace('/', Path.PathSeparator);
-            extensionsPath = env.ContentRootPath + pathSeparatorIndependentPath;
+            var pathSeparatorIndependentPath = ReplacePathSeparator(configuration["Extensions:Path"]);
+            extensionsPath = Path.Combine(env.ContentRootPath, pathSeparatorIndependentPath);
         }
-        
+
+        private static string ReplacePathSeparator(string extensionPath)
+        {
+            return extensionPath.Replace('\\', Path.PathSeparator).Replace('/', Path.PathSeparator);
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
