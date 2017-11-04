@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using ExtCore.Infrastructure.Actions;
 using IdentityServer4.Models;
+using IdentityServer4.Test;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace CoreCRM.Extensions.IdentityServer4.Actions
 {
@@ -19,7 +19,8 @@ namespace CoreCRM.Extensions.IdentityServer4.Actions
             services.AddIdentityServer()
                     .AddDeveloperSigningCredential()
                     .AddInMemoryApiResources(this.GetApiResources())
-                    .AddInMemoryClients(this.GetClients());
+                    .AddInMemoryClients(this.GetClients())
+                    .AddTestUsers(this.GetUsers());
  
             services.AddAuthentication("Bearer")
                 .AddIdentityServerAuthentication(options =>
@@ -58,6 +59,38 @@ namespace CoreCRM.Extensions.IdentityServer4.Actions
 
                     // scopes that client has access to
                     AllowedScopes = { "api1" }
+                },
+ 
+                // resource owner password grant client
+                new Client
+                {
+                    ClientId = "ro.client",
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+                    AllowedScopes = { "api1" }
+                }
+            };
+        }
+        
+        private List<TestUser> GetUsers()
+        {
+            return new List<TestUser>
+            {
+                new TestUser
+                {
+                    SubjectId = "1",
+                    Username = "alice",
+                    Password = "password"
+                },
+                new TestUser
+                {
+                    SubjectId = "2",
+                    Username = "bob",
+                    Password = "password"
                 }
             };
         }
