@@ -1,8 +1,12 @@
 ﻿using System.Collections.Generic;
+using CoreCRM.IdentityServer.Data;
+using CoreCRM.IdentityServer.Models;
 using IdentityServer4.Models;
 using IdentityServer4.Test;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,26 +24,24 @@ namespace CoreCRM.IdentityServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            #region DemoConfiguration
+            services.AddEntityFrameworkNpgsql();
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseNpgsql(Configuration.GetConnectionString("PostgreSQLConnection")));
+            
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
+            services.AddMvc();
+
+            // configure identity server with in-memory stores, keys, clients and scopes
             services.AddIdentityServer()
                 .AddDeveloperSigningCredential()
+                .AddInMemoryPersistedGrants()
+                // .AddInMemoryIdentityResources(this.GetIdentityResources())
                 .AddInMemoryApiResources(this.GetApiResources())
                 .AddInMemoryClients(this.GetClients())
-                .AddTestUsers(this.GetUsers());
- 
-            services.AddAuthentication("Bearer")
-                .AddIdentityServerAuthentication(options =>
-                {
-                    options.Authority = "http://localhost:5000";
-                    options.RequireHttpsMetadata = false;
-
-                    options.ApiName = "api1";
-                });
-            
-            #endregion
-            
-            services.AddMvc();
+                .AddAspNetIdentity<ApplicationUser>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,10 +50,25 @@ namespace CoreCRM.IdentityServer
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
             }
+            else
+            {
+                app.UseExceptionHandler("/Default/Error");
+            }
+
+            app.UseStaticFiles();
+
+            // not needed, since UseIdentityServer adds the authentication middleware
+            // app.UseAuthentication();
             app.UseIdentityServer();
-            app.UseAuthentication();
-            app.UseMvc();
+
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Default}/{action=Index}/{id?}");
+            });
         }
         
         #region TestIdentityFactory
