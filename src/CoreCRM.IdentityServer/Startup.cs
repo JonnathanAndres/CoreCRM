@@ -1,11 +1,9 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using CoreCRM.IdentityServer.Data;
 using CoreCRM.IdentityServer.Models;
-using IdentityServer4.EntityFramework.DbContexts;
-using IdentityServer4.EntityFramework.Mappers;
+using IdentityServer4;
 using IdentityServer4.Models;
 using IdentityServer4.Test;
 using Microsoft.AspNetCore.Builder;
@@ -14,6 +12,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ApiResource = IdentityServer4.Models.ApiResource;
+using Client = IdentityServer4.Models.Client;
+using IdentityResource = IdentityServer4.Models.IdentityResource;
 
 namespace CoreCRM.IdentityServer
 {
@@ -29,12 +30,10 @@ namespace CoreCRM.IdentityServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var connectionString = Configuration.GetConnectionString("PostgreSQLConnection");
-            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            var connectionString = Configuration.GetConnectionString(name: "PostgreSQLConnection");
 
             services.AddEntityFrameworkNpgsql();
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseNpgsql(connectionString));
+            services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
             
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -42,28 +41,13 @@ namespace CoreCRM.IdentityServer
 
             services.AddMvc();
 
-            // configure identity server with in-memory stores, keys, clients and scopes
+            // configure identity server with in-memory stores, keys, clients and resources
             services.AddIdentityServer()
                 .AddDeveloperSigningCredential()
                 .AddTestUsers(this.GetUsers())
-                // this adds the config data from DB (clients, resources)
-                .AddConfigurationStore(options =>
-                {
-                    options.ConfigureDbContext = builder =>
-                        builder.UseNpgsql(connectionString,
-                            sql => sql.MigrationsAssembly(migrationsAssembly));
-                })
-                // this adds the operational data from DB (codes, tokens, consents)
-                .AddOperationalStore(options =>
-                {
-                    options.ConfigureDbContext = builder =>
-                        builder.UseNpgsql(connectionString,
-                            sql => sql.MigrationsAssembly(migrationsAssembly));
-
-                    // this enables automatic token cleanup. this is optional.
-                    options.EnableTokenCleanup = true;
-                    options.TokenCleanupInterval = 30;
-                });
+                .AddInMemoryIdentityResources(this.GetIdentityResources())
+                .AddInMemoryApiResources(this.GetApiResources())
+                .AddInMemoryClients(this.GetClients());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -98,39 +82,7 @@ namespace CoreCRM.IdentityServer
  
         private void InitializeDatabase(IApplicationBuilder app)
         {
-            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
-            {
-                serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
 
-                var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
-                context.Database.Migrate();
-                if (!context.Clients.Any())
-                {
-                    foreach (var client in this.GetClients())
-                    {
-                        context.Clients.Add(client.ToEntity());
-                    }
-                    context.SaveChanges();
-                }
-
-                if (!context.IdentityResources.Any())
-                {
-                    foreach (var resource in this.GetIdentityResources())
-                    {
-                        context.IdentityResources.Add(resource.ToEntity());
-                    }
-                    context.SaveChanges();
-                }
-
-                if (!context.ApiResources.Any())
-                {
-                    foreach (var resource in this.GetApiResources())
-                    {
-                        context.ApiResources.Add(resource.ToEntity());
-                    }
-                    context.SaveChanges();
-                }
-            }
         }
 
         private IEnumerable<IdentityResource> GetIdentityResources()
@@ -149,46 +101,84 @@ namespace CoreCRM.IdentityServer
         {
             return new List<ApiResource>
             {
-                new ApiResource("api1", "My API")
+                new ApiResource("api.main", "Main API"),
+                new ApiResource("api.user_management", "API for user management")
             };
         }
         
         private IEnumerable<Client> GetClients()
         {
-            return new List<Client>
+            var serviceClient = Configuration.GetSection("ServiceClient");
+            var browserClient = Configuration.GetSection("BrowserClient");
+            var mvcClient = Configuration.GetSection("MvcClient");
+
+            var clients = new List<Client>
             {
                 new Client
                 {
-                    ClientId = "client",
+                    ClientId = "service.client",
+                    ClientName = "Service Client",
+                    ClientSecrets = { new Secret(serviceClient.GetValue("Secret", "secret").Sha256()) },
 
-                    // no interactive user, use the clientid/secret for authentication
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
-
-                    // secret for authentication
-                    ClientSecrets =
-                    {
-                        new Secret("secret".Sha256())
-                    },
-
-                    // scopes that client has access to
-                    AllowedScopes = { "api1" }
+                    AllowedScopes = { "api.user_management" }
                 },
  
-                // resource owner password grant client
                 new Client
                 {
-                    ClientId = "ro.client",
-                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                    ClientId = "browser.client",
+                    ClientName = "JavaScript Client",
+                    ClientUri = browserClient.GetValue<string>("Uri"),
 
-                    ClientSecrets =
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowAccessTokensViaBrowser = true,
+
+                    RedirectUris =           browserClient.GetValue<ICollection<string>>("RedirectUris"),
+                    PostLogoutRedirectUris = browserClient.GetValue<ICollection<string>>("PostLogoutRedirectUris"),
+                    AllowedCorsOrigins =     browserClient.GetValue<ICollection<string>>("AllowedCorsOrigins"),
+
+                    AllowedScopes =
                     {
-                        new Secret("secret".Sha256())
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Email,
+                        IdentityServerConstants.StandardScopes.Phone,
+                        IdentityServerConstants.StandardScopes.Address,
+
+                        "api.main"
+                    }
+                },
+                
+                new Client
+                {
+                    ClientId = "mvc.client",
+                    ClientName = "MVC Client",
+                    ClientUri = mvcClient.GetValue<string>("Uri"),
+
+                    AllowedGrantTypes = GrantTypes.Hybrid,
+                    AllowOfflineAccess = true,
+                    ClientSecrets = { new Secret(mvcClient.GetValue<string>("Secret").Sha256()) },
+
+                    RedirectUris =           mvcClient.GetValue<ICollection<string>>("RedirectUris"),
+                    PostLogoutRedirectUris = mvcClient.GetValue<ICollection<string>>("PostLogoutRedirectUris"),
+                    FrontChannelLogoutUri =  mvcClient.GetValue<string>("FrontChannelLogoutUri"),
+
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Email,
+                        IdentityServerConstants.StandardScopes.Phone,
+                        IdentityServerConstants.StandardScopes.Address,
+
+                        "api.main"
                     },
-                    AllowedScopes = { "api1" }
                 }
             };
+                
+            return clients;
         }
-        
+
         private List<TestUser> GetUsers()
         {
             return new List<TestUser>
