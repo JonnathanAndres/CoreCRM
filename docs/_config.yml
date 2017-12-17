@@ -1,1 +1,12 @@
-theme: jekyll-theme-slate
+title: CoreCRM
+description: "A customer resource management system."
+url: "http://www.holmesconan.me/CoreCRM"
+author: Holmes Conan
+github_repo: "https://github.com/holmescn/CoreCRM.git"
+
+plugins:
+    - jekyll-sitemap
+    - jekyll-feed
+    - jekyll-seo-tag
+    - jekyll-redirect-from
+

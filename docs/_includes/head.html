@@ -1,0 +1,28 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
+
+<!-- Favicon -->
+<!-- link rel="shortcut icon" href="/img/favicon.ico" -->
+
+<title>{% if page.title %}{{ page.title }} - {{ site.title }}{% else %}{{ site.title }}{% endif %}</title>
+
+<link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" crossorigin="anonymous" data-fallback="/assets/css/purecss.min.css">
+
+<!--[if lte IE 8]>
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-old-ie-min.css" data-fallback="/assets/css/purecss/grids-responsive-old-ie-min.css">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+    <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-min.css" data-fallback="/assets/css/purecss/grids-responsive-min.css">
+<!--<![endif]-->
+
+<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css" data-fallback="/assets/css/font-awesome.min.css">
+
+<!--[if lte IE 8]>
+    <link rel="stylesheet" href="/assets/css/layouts/blog-old-ie.css">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+    <link rel="stylesheet" href="/assets/css/layouts/blog.css">
+<!--<![endif]-->
+<link rel="stylesheet" href="/assets/css/site.css">

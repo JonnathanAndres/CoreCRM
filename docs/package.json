@@ -1,0 +1,20 @@
+{
+  "name": "holmes-conan-github-pages",
+  "title": "Holmes Conan's GitHub Pages",
+  "author": "Holmes Conan <holmesconan@gmail.com>",
+  "version": "0.0.0",
+  "homepage": "http://www.holmesconan.me",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/holmescn/holmescn.github.io"
+  },
+  "scripts": {
+    "preview": "bundle exec jekyll serve --force_polling",
+    "build": "bundle exec jekyll build --incremental",
+    "push": "git push origin master --tag"
+  },
+  "dependencies": {
+    "font-awesome": "^4.7.0",
+    "purecss": "^1.0.0"
+  }
+}
