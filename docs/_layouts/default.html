@@ -1,9 +1,37 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh">
-    <head>
-        {% include head.html %}
-    </head>
-    <body>
-        {{ content }}
-    </body>
+{% include head.html %}
+<body>
+  <div class="container">
+    <!-- START NAV -->
+    <nav class="navbar">
+      <div class="navbar-brand">
+        <a class="navbar-item brand-text" href="/index/">{{ site.title }}</a>
+        <div class="navbar-burger" data-target="navMenu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+      <div class="navbar-menu">
+        <div class="navbar-end">
+          <a class="navbar-item" href="/index/">Home</a>
+          <a class="navbar-item" href="/history/">History</a>
+          <a class="navbar-item" href="/about/">About</a>
+        </div>
+      </div>
+    </nav>
+    <!-- END NAV -->
+
+    {{ content }}
+  </div>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+    });
+  </script>
+  <script type="text/javascript" async src="https://cdn.bootcss.com/mathjax/2.7.2/MathJax.js?config=TeX-AMS_CHTML"></script>
+  <script async type="text/javascript" src="/js/site.js"></script>
+</body>
 </html>

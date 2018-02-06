@@ -1,12 +1,93 @@
-title: CoreCRM
-description: "A customer resource management system."
-url: "http://www.holmesconan.me/CoreCRM"
-author: Holmes Conan
-github_repo: "https://github.com/holmescn/CoreCRM.git"
+# Site settings
+title: Holmes Conan's Blog
+email: holmesconan@gmail.com
+description: > # this means to ignore newlines until "baseurl:"
+  笔记、思考、作品 and more
 
+baseurl: "" # the subpath of your site, e.g. /blog/
+url: "http://www.holmesconan.me" # the base hostname & protocol for your site
+twitter_username: holmescn
+github_username:  holmescn
+
+permalink: /post/:title
+
+## GitHub repository (if the site is hosted by GitHub) ##
+repository: holmescn/holmescn.github.io
+repository_tree: master
+
+## Language & timezone ##
+lang: zh #the language of your site, eg: en(English), zh(简体中文), zh-Hans(简体中文), zh-Hant(繁體中文)
+timezone: Asia/Shanghai #see https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for the available values
+future: true
+
+## Author & social ##
+author:
+  name: Holmes Conan
+  email: holmesconan@gmail.com
+  twitter: holmescn
+  github:  holmescn
+  # facebook:  #your Facebook username
+  # googleplus:  #your Google+ username
+  # weibo:  #your Weibo username
+  # douban:  #your Douban username
+  # linkedin:  #your Linkedin username
+
+## Comment system (Disqus) ##
+disqus:
+  # shortname:  #the Disqus shortname for the site
+
+## Comment system (gitalk) ##
+# please refer to https://github.com/gitalk/gitalk for more info.
+gitalk:
+  # clientID:  #Github Application Client ID
+  # clientSecret:  #Github Application Client Secret
+  # repository:  #Github repo
+  # owner:  #Github repo owner
+  # admin: #Github repo owner and collaborators, only these guys can initialize github issues, IT IS A LIST.
+    # - owner
+
+## Google Analytics ##
+# ga_tracking_id:  #Google analytics id for the site
+
+## Baidu Analytics ##
+# baidu_tracking_id:  #Google analytics id for the site
+
+## Post excerpts ##
+excerpt_separator: <!--more-->
+excerpt_type: html # text | html
+
+## Build ##
+markdown: kramdown
+highlighter: rouge
+permalink: date
+
+sass:
+  sass_dir: _sass
+  style: :compressed
+
+
+exclude:
+  - CHANGELOG.md
+  - CHECKLIST.md
+  - Gemfile
+  - Gemfile.lock
+  - LICENSE
+  - README-*.md
+  - README.md
+  - gulpfile.js
+  - package-lock.json
+  - package.json
+  - /docs
+  - /node_modules
+  - node_modules/
+  - /screenshots
+  - /test
+  - /vendor
+
+## Plugins ##
 plugins:
-    - jekyll-sitemap
-    - jekyll-feed
-    - jekyll-seo-tag
-    - jekyll-redirect-from
-
+  - jekyll-sitemap
+  - jekyll-feed
+  - jekyll-paginate-v2
+  - jekyll-seo-tag
+  - jemoji

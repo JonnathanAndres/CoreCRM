@@ -1,0 +1,19 @@
+---
+layout: default
+---
+<br>
+{% for post in site.posts %}
+<div class="box">
+  <article class="media">
+    <div class="media-content">
+      <div class="content">
+        <p>
+          <strong class="is-size-4"><a href="{{ post.url }}">{{ post.title }}</a></strong> <small>{{ post.date | date: '%b %d, %Y' }}</small>
+          <br>
+          {% if post.abstract %}{{ post.abstract }}{% else %}没有摘要，直接看内容吧！{% endif %}
+        </p>
+      </div>
+    </div>
+  </article>
+</div>
+{% endfor %}
